@@ -1,8 +1,7 @@
 package com.uade.tpo.ecommerce.ecommerce.repository;
 
-import org.springframework.stereotype.Repository;
+import com.uade.tpo.ecommerce.ecommerce.repository.entity.User;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-@Repository
-public class UserRepository {
-
+public interface UserRepository extends JpaRepository<User,Long> {
 }
