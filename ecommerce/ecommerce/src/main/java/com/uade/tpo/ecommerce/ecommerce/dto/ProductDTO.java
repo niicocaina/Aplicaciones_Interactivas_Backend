@@ -1,16 +1,18 @@
-package com.uade.tpo.ecommerce.ecommerce.repository.entity;
+package com.uade.tpo.ecommerce.ecommerce.dto;
 
-
+import com.uade.tpo.ecommerce.ecommerce.repository.entity.Category;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.awt.*;
-import java.lang.reflect.Array;
 
-@Entity
-public class Product {
-    @Id
+@Getter
+@Setter
+@AllArgsConstructor
+public class ProductDTO {
 
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
     private String description;
@@ -18,10 +20,9 @@ public class Product {
     private int promotionalPrice;
     private int stock;
 
-    @ManyToOne
-    @JoinColumn(name = "categoryId")
     private Category category;
 
     private List imgUrl;
+
 
 }

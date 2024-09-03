@@ -1,6 +1,6 @@
 package com.uade.tpo.ecommerce.ecommerce.service;
 
-import com.uade.tpo.ecommerce.ecommerce.controller.UserDTO;
+import com.uade.tpo.ecommerce.ecommerce.dto.UserDTO;
 import com.uade.tpo.ecommerce.ecommerce.repository.UserRepository;
 import com.uade.tpo.ecommerce.ecommerce.repository.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +13,6 @@ public class UserService {
 
     public UserDTO getUserById(Long id) throws Exception {
         User user = userRepository.findById(id).orElseThrow(() -> new Exception("an Error has ocurred"));
-        return new UserDTO(user.getId());
+        return new UserDTO(user.getId(),user.getName(),user.getLastName(),user.getUserName(),user.getEmail(),user.getPassword(),user.getBirthday());
     }
 }
