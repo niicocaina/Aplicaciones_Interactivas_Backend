@@ -14,14 +14,4 @@ public class EcommerceApplication {
 		SpringApplication.run(EcommerceApplication.class, args);
 	}
 
-	@Bean
-	CommandLineRunner runner(UserRepository userRepository) {
-		return args -> {
-			User user = new User();
-			user.setName("Juan");
-
-			userRepository.save(user);
-		};
-	}
-
 }

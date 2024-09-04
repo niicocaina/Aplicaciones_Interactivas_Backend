@@ -2,17 +2,17 @@ package com.uade.tpo.ecommerce.ecommerce.repository.entity;
 
 import jakarta.persistence.*;
 
-import java.awt.*;
-import java.util.List;
+import java.util.Date;
 
 @Entity
-public class Category {
+public class CheckOut {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String name;
+    private Date transactionDate;
+    private int total;
 
-    @OneToMany(mappedBy = "category")
-    private List<Product> productList;
-
+    @ManyToOne
+    @JoinColumn(name = "basketId")
+    private Basket basket;
 }
