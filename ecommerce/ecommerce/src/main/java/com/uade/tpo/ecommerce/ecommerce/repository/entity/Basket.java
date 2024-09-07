@@ -8,15 +8,11 @@ import java.util.List;
 @Entity
 public class Basket {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private Date creationDate;
 
-    @OneToOne
-    @JoinColumn(name = "userId", referencedColumnName = "userId")
-    private User user;
 
-    @OneToMany(mappedBy = "basket")
-    private List<ProductBasket> productBasketList;
+
 }

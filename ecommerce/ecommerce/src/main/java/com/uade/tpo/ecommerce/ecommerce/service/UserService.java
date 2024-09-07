@@ -4,7 +4,9 @@ import com.uade.tpo.ecommerce.ecommerce.dto.UserDTO;
 import com.uade.tpo.ecommerce.ecommerce.repository.UserRepository;
 import com.uade.tpo.ecommerce.ecommerce.repository.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
 
 @Service
 public class UserService {
@@ -12,7 +14,8 @@ public class UserService {
     private UserRepository userRepository;
 
     public UserDTO getUserById(Long id) throws Exception {
-        User user = userRepository.findById(id).orElseThrow(() -> new Exception("an Error has ocurred"));
-        return new UserDTO(user.getUserId(),user.getName(),user.getLastName(),user.getUserName(),user.getEmail(),user.getPassword(),user.getBirthday());
+        var userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findById(id).orElseThrow(() -> new Exception("An error has ocurred"));
+        return new UserDTO(user.getId(), user.getName(), user.getEmail(),user.getPassword(),user.getFirstName(),user.getLastName(),user.getRole());
     }
 }

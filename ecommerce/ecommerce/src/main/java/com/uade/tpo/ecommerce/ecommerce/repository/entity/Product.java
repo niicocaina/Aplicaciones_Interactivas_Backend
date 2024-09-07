@@ -22,8 +22,6 @@ public class Product {
     @JoinColumn(name = "categoryId")
     private Category category;
 
-    @OneToMany(mappedBy = "product")
-    private List<ProductBasket> productBasketList;
 
     //private List<Array> imgUrl;
 

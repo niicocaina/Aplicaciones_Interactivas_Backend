@@ -1,30 +1,46 @@
 package com.uade.tpo.ecommerce.ecommerce.repository.entity;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 
-import java.util.Date;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
 import java.util.List;
 
-@Getter
-@Setter
-@Entity
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private  Long userId;
 
+@Data
+@Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class User implements UserDetails {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String name;
-    private String lastName;
-    private String userName;
+    @Column(nullable = false, unique = true)
     private String email;
     private String password;
-    private Date birthday;
+    @Column(nullable = false, unique = true)
+    private String firstName;
+    @Column(nullable = false, unique = true)
+    private String lastName;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
-    @OneToOne(mappedBy = "user")
-    private Basket basket;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role.name()));
+    }
 
-    @OneToMany(mappedBy = "user")
-    private List<Favorites> products;
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
 }
