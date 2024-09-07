@@ -13,6 +13,21 @@ public class UserService {
 
     public UserDTO getUserById(Long id) throws Exception {
         User user = userRepository.findById(id).orElseThrow(() -> new Exception("an Error has ocurred"));
-        return new UserDTO(user.getUserId(),user.getName(),user.getLastName(),user.getUserName(),user.getEmail(),user.getPassword(),user.getBirthday());
+        return new UserDTO(user);
+    }
+
+    public UserDTO createUser(UserDTO userDTO) {
+        User user = new User();
+        user.setUserId(userDTO.getId());
+        user.setName(userDTO.getName());
+        user.setLastName(userDTO.getLastName());
+        user.setEmail(userDTO.getEmail());
+        user.setPassword(userDTO.getPassword());
+        user.setBirthday(userDTO.getBirthday());
+        user.setUserName(userDTO.getUserName());
+
+        User savedUser = userRepository.save(user);
+
+        return new UserDTO(savedUser);
     }
 }
