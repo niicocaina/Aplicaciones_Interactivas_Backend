@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 @Entity
 public class Favorites {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @ManyToOne

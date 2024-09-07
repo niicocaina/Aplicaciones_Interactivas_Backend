@@ -14,8 +14,21 @@ public class UserService {
     private UserRepository userRepository;
 
     public UserDTO getUserById(Long id) throws Exception {
-        var userName = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findById(id).orElseThrow(() -> new Exception("An error has ocurred"));
-        return new UserDTO(user.getId(), user.getName(), user.getEmail(),user.getPassword(),user.getFirstName(),user.getLastName(),user.getRole());
+
+        User user = userRepository.findById(id).orElseThrow(() -> new Exception("an Error has ocurred"));
+        return new UserDTO(user.getId(),user.getFirstName(),user.getEmail(),user.getPassword(),user.getFirstName(),user.getLastName(),user.getRole());
+    }
+
+    public UserDTO createUser(UserDTO userDTO) {
+        User user = new User();
+        user.setId(userDTO.getId());
+        user.setName(userDTO.getName());
+        user.setLastName(userDTO.getLastName());
+        user.setEmail(userDTO.getEmail());
+        user.setPassword(userDTO.getPassword());
+
+        User savedUser = userRepository.save(user);
+
+        return userDTO;
     }
 }

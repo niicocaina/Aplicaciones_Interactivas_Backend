@@ -5,6 +5,7 @@ import com.uade.tpo.ecommerce.ecommerce.repository.entity.User;
 import com.uade.tpo.ecommerce.ecommerce.repository.UserRepository;
 import com.uade.tpo.ecommerce.ecommerce.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,4 +22,9 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
+    @PostMapping
+    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
+        UserDTO createdUser = userService.createUser(userDTO);
+        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+    }
 }
