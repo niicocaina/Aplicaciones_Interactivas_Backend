@@ -30,7 +30,7 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req -> req.requestMatchers("/api/v1/auth/**").permitAll()
-                        .requestMatchers("/api/v1/users/**").hasAnyAuthority(Role.USER.name())
+                        .requestMatchers("/api/v1/users/**").hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
                         .anyRequest()
                         .authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
