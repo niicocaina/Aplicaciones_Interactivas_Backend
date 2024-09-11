@@ -8,7 +8,7 @@ import java.util.Date;
 public class CheckOut {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long checkOutId;
     private Date transactionDate;
     private int total;
 

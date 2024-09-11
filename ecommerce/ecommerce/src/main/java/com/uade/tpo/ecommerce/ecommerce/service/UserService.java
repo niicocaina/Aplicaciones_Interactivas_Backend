@@ -13,23 +13,15 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public UserDTO getUserById(Long id) throws Exception {
-
+    public UserDTO getUserDTOById(Long id) throws Exception {
         User user = userRepository.findById(id).orElseThrow(() -> new Exception("an Error has ocurred"));
-        return new UserDTO(user.getId(),user.getFirstName(),user.getEmail(),user.getPassword(),user.getFirstName(),user.getLastName(),user.getRole());
+        return new UserDTO(user);
     }
 
-    //segun entiendo este metodo no sirve mas por que se maneja en el AuthenticationService
-    public UserDTO createUser(UserDTO userDTO) {
-        User user = new User();
-        user.setId(userDTO.getId());
-        user.setName(userDTO.getName());
-        user.setLastName(userDTO.getLastName());
-        user.setEmail(userDTO.getEmail());
-        user.setPassword(userDTO.getPassword());
-
-        User savedUser = userRepository.save(user);
-
-        return userDTO;
+    public User getUserById(Long id) throws Exception {
+        return userRepository.findById(id).orElseThrow(() -> new Exception("No se encontro el usuario"));
     }
+
+
+
 }
