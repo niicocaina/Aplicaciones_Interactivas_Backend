@@ -1,15 +1,12 @@
 package com.uade.tpo.ecommerce.ecommerce.dto;
 
 import com.uade.tpo.ecommerce.ecommerce.repository.entity.Category;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.awt.*;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 public class ProductDTO {
 
@@ -19,9 +16,7 @@ public class ProductDTO {
     private int price;
     private int promotionalPrice;
     private int stock;
-
     private Category category;
-
     private List imgUrl;
 
 
