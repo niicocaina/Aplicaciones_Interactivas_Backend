@@ -1,9 +1,16 @@
 package com.uade.tpo.ecommerce.ecommerce.repository.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-public class Favorites {
+@NoArgsConstructor
+@Setter
+@Getter
+public class Favorite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -13,7 +20,5 @@ public class Favorites {
     private User user;
 
 
-    @ManyToOne
-    @JoinColumn(name = "prodcutId")
-    private Product product;
+    private Long productId;
 }
