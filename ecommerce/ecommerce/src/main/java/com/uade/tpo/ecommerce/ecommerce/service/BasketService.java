@@ -33,19 +33,18 @@ public class BasketService {
         BasketDTO basketDTO = new BasketDTO();
         basketDTO.setBasketId(basket.getBasketId());
         basketDTO.setCreationDate(basket.getCreationDate());
-        basketDTO.setUser(userService.getUserDTOById(basket.getUser().getUserId()));
-
-        List<ProductBasketDTO> productBasketDTOs = basket.getProducts().stream()
-                .map(this::mapToProductBasketDTO)
-                .collect(Collectors.toList());
-
-        basketDTO.setProducts(productBasketDTOs);
+        basketDTO.setUser(basket.getUser());
+        basketDTO.setProducts(basket.getProducts());
 
         return basketDTO;
     }
 
     private ProductBasketDTO mapToProductBasketDTO(ProductBasket productBasket) {
         ProductBasketDTO productBasketDTO = new ProductBasketDTO();
+        productBasketDTO.setProductBasketId(productBasket.getProductBasketId());
+        productBasketDTO.setQuantity(productBasket.getQuantity());
+        productBasketDTO.setProduct(productBasket.getProduct());
+        productBasketDTO.setBasket(productBasket.getBasket());
         return productBasketDTO;
     }
 
@@ -62,7 +61,7 @@ public class BasketService {
         Product product = productRepository.findById(productId).orElseThrow(() -> new Exception("No se encontro el producto"));
         Optional<ProductBasket> existingProductBasket = productBasketRepository.findByBasketAndProduct(basket, product);
 
-        if(existingProductBasket.isPresent()) {
+        if (existingProductBasket.isPresent()) {
             ProductBasket productBasket = existingProductBasket.get();
             productBasket.setQuantity(productBasket.getQuantity() + quiantity);
             productBasketRepository.save(productBasket);
@@ -78,4 +77,31 @@ public class BasketService {
         return mapToBasketDTO(basket);
     }
 
+    public void removeProductFromBasket(Long userId, Long productId) throws Exception {
+        User user = userService.getUserById(userId);
+        Basket basket = basketRepository.findBasketByUser(user)
+                .orElseThrow(() -> new Exception("No existe el carrito"));
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new Exception("No se encontro el producto"));
+        ProductBasket productBasket = productBasketRepository.findByBasketAndProduct(basket, product)
+                .orElseThrow(() -> new Exception("El producto no se encuentra en el carrito"));
+        productBasketRepository.delete(productBasket);
+    }
+
+    public void clearBasket(Long userId) throws Exception {
+        User user = userService.getUserById(userId);
+        Basket basket = basketRepository.findBasketByUser(user)
+                .orElseThrow(() -> new Exception("No existe el carrito"));
+        List<ProductBasket> productBasketList = productBasketRepository.findByBasket(basket);
+        productBasketRepository.deleteAll(productBasketList);
+
+    }
+
+    /*public Double calculateTotal(Long basketId) {
+        // Lógica para calcular el total del carrito
+    }
+
+    public Checkout checkout(Long userId) {
+        // Lógica para manejar el checkout
+    }*/
 }
