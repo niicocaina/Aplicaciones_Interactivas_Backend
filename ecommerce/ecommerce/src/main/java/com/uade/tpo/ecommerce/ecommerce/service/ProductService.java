@@ -13,8 +13,28 @@ public class ProductService {
     private ProductRepository productRepository;
 
     public ProductDTO getProductById(Long id) throws Exception{
-        Product product = productRepository.findById(id).orElseThrow(() -> new Exception("an Error has ocurred"));
-        return new ProductDTO(product.getProductId(),product.getName(), product.getDescription(), product.getPrice(),
-                product.getPromotionalPrice(), product.getStock(), product.getCategory());
+        Product product = productRepository.findById(id).
+                orElseThrow(() -> new Exception("No se ha encontrado al usuario"));
+        return product.toProductDTO();
+    }
+
+    public ProductDTO saveNewProduct(ProductDTO productDTO) throws Exception{
+        Product product = productDTO.toProduct();
+        productRepository.save(product);
+        return productDTO;
+    }
+
+    public void deleteProductById(Long id) throws Exception{
+        productRepository.deleteById(id);
+    }
+
+    public void updateStockById(ProductDTO productDTO) throws Exception{
+        // Busca el producto existente por ID
+        Product product = productRepository.findById(productDTO.getId())
+                .orElseThrow(() -> new Exception("Product not found with id: " + productDTO.getId()));
+        // Actualiza solo el campo de stock
+        product.setStock(productDTO.getStock());
+        // Guarda el producto actualizado
+        productRepository.save(product);
     }
 }

@@ -22,9 +22,9 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    @PostMapping
+    /*@PostMapping
     public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
         UserDTO createdUser = userService.createUser(userDTO);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
-    }
+    }*/
 }

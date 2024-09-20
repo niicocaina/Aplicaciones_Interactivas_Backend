@@ -22,7 +22,7 @@ public class UserService {
     }
 
     //segun entiendo este metodo no sirve mas por que se maneja en el AuthenticationService
-    public UserDTO createUser(UserDTO userDTO) {
+    /*public UserDTO createUser(UserDTO userDTO) {
         User user = new User();
         user.setId(userDTO.getId());
         user.setName(userDTO.getName());
@@ -33,5 +33,5 @@ public class UserService {
         User savedUser = userRepository.save(user);
 
         return userDTO;
-    }
+    }*/
 }
