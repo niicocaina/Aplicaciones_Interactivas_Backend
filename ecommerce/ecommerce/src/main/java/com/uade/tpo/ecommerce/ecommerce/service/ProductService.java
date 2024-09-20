@@ -1,16 +1,15 @@
 package com.uade.tpo.ecommerce.ecommerce.service;
 
 import com.uade.tpo.ecommerce.ecommerce.dto.ProductDTO;
-import com.uade.tpo.ecommerce.ecommerce.repository.CartRepository;
+import com.uade.tpo.ecommerce.ecommerce.repository.BasketRepository;
 import com.uade.tpo.ecommerce.ecommerce.repository.FavoriteRepository;
 import com.uade.tpo.ecommerce.ecommerce.repository.ProductRepository;
-import com.uade.tpo.ecommerce.ecommerce.repository.entity.Cart;
-import com.uade.tpo.ecommerce.ecommerce.repository.entity.Favorite;
-import com.uade.tpo.ecommerce.ecommerce.repository.entity.Product;
-import com.uade.tpo.ecommerce.ecommerce.repository.entity.User;
+import com.uade.tpo.ecommerce.ecommerce.repository.RecentlyViewedRepository;
+import com.uade.tpo.ecommerce.ecommerce.repository.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -23,30 +22,34 @@ public class ProductService {
     private FavoriteRepository favoriteRepository;
 
     @Autowired
-    private CartRepository cartRepository;
+    private RecentlyViewedRepository recentlyViewedRepository;
 
-    // Obtener productos destacados
+    @Autowired
+    private BasketRepository basketRepository;
+
     public List<Product> getFeaturedProducts() {
         return productRepository.findFeaturedProducts();
     }
 
-    // Obtener productos por categoría
     public List<Product> getProductsByCategory(Long categoryId) {
         return productRepository.findByCategoryId(categoryId);
     }
 
-    // Obtener productos vistos recientemente por el usuario
     public List<Product> getRecentlyViewedProducts(User user) {
         return productRepository.findRecentlyViewedByUser(user.getId());
     }
 
-    // Obtener detalles del producto
-    public ProductDTO getProductDetail(Long productId) throws Exception {
+    public ProductDTO getProductDetail(Long productId,User user) throws Exception {
+
         Product product = productRepository.findById(productId).orElseThrow(() -> new Exception("Producto no encontrado"));
+        RecentlyViewed recent = new RecentlyViewed();
+        recent.setProduct(product);
+        recent.setUser(user);
+        recent.setViewedAt(LocalDateTime.now());
+        recentlyViewedRepository.save(recent);
         return new ProductDTO(product);
     }
 
-    // Añadir producto a favoritos
     public void addToFavorites(Long productId, User user) {
         Favorite favorite = new Favorite();
         favorite.setProductId(productId);
@@ -54,18 +57,17 @@ public class ProductService {
         favoriteRepository.save(favorite);
     }
 
-    // Añadir producto al carrito
-    public boolean addToCart(Long productId, User user) throws Exception{
+    public boolean addToBasket(Long productId, User user) throws Exception{
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new Exception("PRoducto no encontrado"));
 
         if (product.getStock() > 0) {
-            Cart cart = new Cart();
-            cart.setUser(user);
-            cart.setProductId(productId);
-            cartRepository.save(cart);
+            Basket basket = new Basket();
+            basket.setUser(user);
+            basket.setProductId(productId);
+            basketRepository.save(basket);
             return true;
         }
-        return false;  // No hay stock disponible
+        return false;
     }
 }

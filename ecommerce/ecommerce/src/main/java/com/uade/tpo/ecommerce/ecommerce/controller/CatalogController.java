@@ -53,11 +53,14 @@ public class CatalogController {
     @GetMapping("/product/{productId}")
     public ResponseEntity<ProductDTO> getProductDetail(@PathVariable Long productId) throws Exception{
 
-        ProductDTO productDetail = productService.getProductDetail(productId);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserDTO user = userService.getUserByEmail(auth.getName());
+        User user_final = new User(user.getId(),user.getFirstName(),user.getEmail(),user.getPassword(),user.getFirstName(),user.getLastName(),user.getRole());
+        ProductDTO productDetail = productService.getProductDetail(productId,user_final);
         return new ResponseEntity<>(productDetail, HttpStatus.OK);
     }
 
-    // Añadir producto a favoritos
+    // Agregar producto a favoritos
     @PostMapping("/product/{productId}/favorite")
     public ResponseEntity<Void> addToFavorites(@PathVariable Long productId) throws Exception{
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -67,13 +70,13 @@ public class CatalogController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    // Añadir producto al carrito
-    @PostMapping("/product/{productId}/cart")
-    public ResponseEntity<Void> addToCart(@PathVariable Long productId) throws Exception{
+    // Agregar producto al carrito
+    @PostMapping("/product/{productId}/basket")
+    public ResponseEntity<Void> addToBasket(@PathVariable Long productId) throws Exception{
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserDTO user = userService.getUserByEmail(auth.getName());
         User user_final = new User(user.getId(),user.getFirstName(),user.getEmail(),user.getPassword(),user.getFirstName(),user.getLastName(),user.getRole());
-        boolean added = productService.addToCart(productId, user_final);
+        boolean added = productService.addToBasket(productId, user_final);
         if (!added) {
             return new ResponseEntity<>(HttpStatus.CONFLICT); // Conflicto si no hay stock
         }

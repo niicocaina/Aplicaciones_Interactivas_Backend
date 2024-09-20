@@ -1,10 +1,15 @@
 package com.uade.tpo.ecommerce.ecommerce.repository.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Setter
+@Getter
 public class RecentlyViewed {
 
     @Id
@@ -20,8 +25,4 @@ public class RecentlyViewed {
     private Product product;
 
     private LocalDateTime viewedAt;
-
-
-
-    // Constructor, getters y setters
 }
