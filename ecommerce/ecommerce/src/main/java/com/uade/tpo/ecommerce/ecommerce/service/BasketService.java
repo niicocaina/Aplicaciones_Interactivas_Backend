@@ -1,7 +1,9 @@
 package com.uade.tpo.ecommerce.ecommerce.service;
 
 import com.uade.tpo.ecommerce.ecommerce.dto.BasketDTO;
+import com.uade.tpo.ecommerce.ecommerce.dto.BasketSummaryDTO;
 import com.uade.tpo.ecommerce.ecommerce.dto.ProductBasketDTO;
+import com.uade.tpo.ecommerce.ecommerce.dto.ProductInBasketDTO;
 import com.uade.tpo.ecommerce.ecommerce.repository.BasketRepository;
 import com.uade.tpo.ecommerce.ecommerce.repository.ProductBasketRepository;
 import com.uade.tpo.ecommerce.ecommerce.repository.ProductRepository;
@@ -12,7 +14,6 @@ import com.uade.tpo.ecommerce.ecommerce.repository.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -55,8 +56,8 @@ public class BasketService {
         return basketRepository.save(newBasket);
     }
 
-    public BasketDTO addProductToBasket(Long userId, Long productId, int quiantity) throws Exception {
-        User user = userService.getUserById(userId);
+    public BasketDTO addProductToBasket(String email, Long productId, int quiantity) throws Exception {
+        User user = userService.getUserByEmail(email);
         Basket basket = basketRepository.findBasketByUser(user).orElseGet(() -> createNewBasketForUser(user));
         Product product = productRepository.findById(productId).orElseThrow(() -> new Exception("No se encontro el producto"));
         Optional<ProductBasket> existingProductBasket = productBasketRepository.findByBasketAndProduct(basket, product);
@@ -77,8 +78,8 @@ public class BasketService {
         return mapToBasketDTO(basket);
     }
 
-    public void removeProductFromBasket(Long userId, Long productId) throws Exception {
-        User user = userService.getUserById(userId);
+    public void removeProductFromBasket(String email, Long productId) throws Exception {
+        User user = userService.getUserByEmail(email);
         Basket basket = basketRepository.findBasketByUser(user)
                 .orElseThrow(() -> new Exception("No existe el carrito"));
         Product product = productRepository.findById(productId)
@@ -88,13 +89,45 @@ public class BasketService {
         productBasketRepository.delete(productBasket);
     }
 
-    public void clearBasket(Long userId) throws Exception {
-        User user = userService.getUserById(userId);
+    public void clearBasket(String email) throws Exception {
+        User user = userService.getUserByEmail(email);
         Basket basket = basketRepository.findBasketByUser(user)
                 .orElseThrow(() -> new Exception("No existe el carrito"));
         List<ProductBasket> productBasketList = productBasketRepository.findByBasket(basket);
         productBasketRepository.deleteAll(productBasketList);
 
+    }
+
+    public Basket getBasketByUserEmail(String email) throws Exception {
+        User user = userService.getUserByEmail(email);
+        return basketRepository.findBasketByUser(user).orElse(null);
+    }
+
+    private BasketSummaryDTO mapToBasketSummaryDTO(Basket basket) {
+        BasketSummaryDTO basketSummaryDTO = new BasketSummaryDTO();
+        basketSummaryDTO.setCreationDate(basket.getCreationDate());
+
+        // Mapear cada ProductBasket a ProductDTO
+        List<ProductInBasketDTO> productDTOs = basket.getProducts().stream()
+                .map(productBasket -> new ProductInBasketDTO(
+                        productBasket.getProduct().getProductId(),
+                        productBasket.getProduct().getName(),
+                        productBasket.getProduct().getDescription(),
+                        productBasket.getProduct().getPrice(),
+                        productBasket.getQuantity()
+                        ))
+                .collect(Collectors.toList());
+
+        basketSummaryDTO.setProducts(productDTOs);
+
+        return basketSummaryDTO;
+    }
+
+    public BasketSummaryDTO getBasketSummaryByUserEmail(String email) throws Exception {
+        User user = userService.getUserByEmail(email);
+        Basket basket = basketRepository.findBasketByUser(user)
+                .orElseThrow(() -> new Exception("Carrito no encontrado"));
+        return mapToBasketSummaryDTO(basket);
     }
 
     /*public Double calculateTotal(Long basketId) {

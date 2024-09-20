@@ -18,7 +18,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUser(@PathVariable Long id) throws Exception{
-        UserDTO user = userService.getUserById(id);
+        UserDTO user = userService.getUserDTOById(id);
         return ResponseEntity.ok(user);
     }
 }

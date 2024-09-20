@@ -18,8 +18,8 @@ public class UserService {
         return new UserDTO(user);
     }
 
-    public User getUserById(Long id) throws Exception {
-        return userRepository.findById(id).orElseThrow(() -> new Exception("No se encontro el usuario"));
+    public User getUserByEmail(String email) throws Exception {
+        return userRepository.findByEmail(email).orElseThrow(() -> new Exception("No se encontro el usuario"));
     }
 
 
