@@ -13,7 +13,7 @@ import lombok.Setter;
 public class Favorite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private long favoritesId;
 
     @ManyToOne
     @JoinColumn(name = "userId")
