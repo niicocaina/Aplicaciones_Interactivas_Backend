@@ -1,6 +1,5 @@
 package com.uade.tpo.ecommerce.ecommerce.repository.entity;
 
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,8 +12,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
-
-
 @Data
 @Entity
 @Builder
@@ -23,17 +20,21 @@ import java.util.List;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String name;
+    private Long userId;
+
     @Column(nullable = false, unique = true)
     private String email;
     private String password;
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String firstName;
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String lastName;
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @OneToMany(mappedBy = "user")
+    private List<Basket> baskets;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

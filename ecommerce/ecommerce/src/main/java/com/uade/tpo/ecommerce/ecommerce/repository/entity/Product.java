@@ -2,15 +2,13 @@ package com.uade.tpo.ecommerce.ecommerce.repository.entity;
 
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.lang.reflect.Array;
 import java.util.List;
 
+@Data
 @Entity
-@Getter
-@Setter
 public class Product {
     @Id
 
@@ -29,5 +27,6 @@ public class Product {
     private Category category;
 
 
+    //private List<Array> imgUrl;
 
 }

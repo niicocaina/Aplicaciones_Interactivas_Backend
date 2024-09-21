@@ -1,26 +1,26 @@
 package com.uade.tpo.ecommerce.ecommerce.repository.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
+@Data
 @Entity
-@Setter
-@Getter
 public class Basket {
-    @jakarta.persistence.Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    private Long productId;
-
     private Date creationDate;
 
-    // Constructor, getters y setters
+    @ManyToOne
+    @JoinColumn(name = "userId")
+    private User user;
+
+    @OneToMany(mappedBy = "basket")
+    private List<ProductBasket> products;
+
+
 }
