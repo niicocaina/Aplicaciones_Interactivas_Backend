@@ -21,9 +21,9 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO) throws Exception {
-        ProductDTO createdUser = productService.saveNewProduct(productDTO);
-        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+    public ResponseEntity<HttpStatus> createProduct(@RequestBody ProductDTO productDTO) throws Exception {
+        productService.saveNewProduct(productDTO);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
@@ -32,9 +32,9 @@ public class ProductController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<HttpStatus> updateStock(@RequestBody ProductDTO productDTO) throws Exception{
-        productService.updateStockById(productDTO);
+    @PatchMapping("/{id}/{newStock}")
+    public ResponseEntity<HttpStatus> updateStock(@PathVariable Long id, @PathVariable Integer newStock) throws Exception{
+        productService.updateStockById(id, newStock);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 }

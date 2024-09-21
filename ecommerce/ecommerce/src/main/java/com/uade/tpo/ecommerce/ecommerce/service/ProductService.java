@@ -2,7 +2,6 @@ package com.uade.tpo.ecommerce.ecommerce.service;
 
 import com.uade.tpo.ecommerce.ecommerce.dto.ProductDTO;
 import com.uade.tpo.ecommerce.ecommerce.repository.ProductRepository;
-import com.uade.tpo.ecommerce.ecommerce.repository.UserRepository;
 import com.uade.tpo.ecommerce.ecommerce.repository.entity.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,27 +13,38 @@ public class ProductService {
 
     public ProductDTO getProductById(Long id) throws Exception{
         Product product = productRepository.findById(id).
-                orElseThrow(() -> new Exception("No se ha encontrado al usuario"));
+                orElseThrow(() -> new Exception("No se ha encontrado el producto"));
         return product.toProductDTO();
     }
 
-    public ProductDTO saveNewProduct(ProductDTO productDTO) throws Exception{
-        Product product = productDTO.toProduct();
-        productRepository.save(product);
-        return productDTO;
+    public void saveNewProduct(ProductDTO productDTO) throws Exception{
+        try {
+            Product product = productDTO.toProduct();
+            productRepository.save(product);
+        }catch(Exception e){
+            throw new Exception("No se ha podido guardar el producto");
+        }
     }
 
     public void deleteProductById(Long id) throws Exception{
-        productRepository.deleteById(id);
+        try {
+            productRepository.deleteById(id);
+        }catch (Exception e){
+            throw new Exception("No se ha podido eliminar el producto");
+        }
     }
 
-    public void updateStockById(ProductDTO productDTO) throws Exception{
+    public void updateStockById(Long id, Integer newStock) throws Exception{
         // Busca el producto existente por ID
-        Product product = productRepository.findById(productDTO.getId())
-                .orElseThrow(() -> new Exception("Product not found with id: " + productDTO.getId()));
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new Exception("Producto no encontrado con id: "+id));
         // Actualiza solo el campo de stock
-        product.setStock(productDTO.getStock());
+        product.setStock(newStock);
         // Guarda el producto actualizado
-        productRepository.save(product);
+        try {
+            productRepository.save(product);
+        }catch (Exception e){
+            throw new Exception("No se ha podido actualizar el stock del producto");
+        }
     }
 }
