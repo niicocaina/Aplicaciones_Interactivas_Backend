@@ -1,6 +1,7 @@
 package com.uade.tpo.ecommerce.ecommerce.dto;
 
 import com.uade.tpo.ecommerce.ecommerce.repository.entity.Category;
+import com.uade.tpo.ecommerce.ecommerce.repository.entity.Product;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,7 +23,16 @@ public class ProductDTO {
 
     private Category category;
 
-    private List imgUrl;
+    private String imgUrl;
 
+    public ProductDTO(Product product) {
+        this.id = product.getProductId();
+        this.name = product.getName();
+        this.description = product.getDescription();
+        this.price = product.getPrice();
+        this.promotionalPrice = product.getPromotionalPrice();
+        this.stock = product.getStock();
+        this.imgUrl = product.getImageUrl();
+    }
 
 }

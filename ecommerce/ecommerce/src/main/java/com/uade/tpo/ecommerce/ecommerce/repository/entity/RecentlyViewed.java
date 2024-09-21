@@ -3,14 +3,16 @@ package com.uade.tpo.ecommerce.ecommerce.repository.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Setter
 @Getter
-public class Basket {
-    @jakarta.persistence.Id
+public class RecentlyViewed {
+
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -18,9 +20,9 @@ public class Basket {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private Long productId;
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
 
-    private Date creationDate;
-
-    // Constructor, getters y setters
+    private LocalDateTime viewedAt;
 }
