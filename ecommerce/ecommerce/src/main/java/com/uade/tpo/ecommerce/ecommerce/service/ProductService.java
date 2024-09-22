@@ -57,17 +57,4 @@ public class ProductService {
         favoriteRepository.save(favorite);
     }
 
-    public boolean addToBasket(Long productId, User user) throws Exception{
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new Exception("PRoducto no encontrado"));
-
-        if (product.getStock() > 0) {
-            Basket basket = new Basket();
-            basket.setUser(user);
-            basket.setProductId(productId);
-            basketRepository.save(basket);
-            return true;
-        }
-        return false;
-    }
 }

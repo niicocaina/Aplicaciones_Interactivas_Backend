@@ -18,10 +18,9 @@ public class UserService {
         return new UserDTO(user);
     }
 
-    public UserDTO getUserByEmail(String email) throws Exception {
+    public User getUserByEmail(String email) throws Exception {
 
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new Exception("an Error has ocurred"));
-        return new UserDTO(user.getId(),user.getFirstName(),user.getEmail(),user.getPassword(),user.getFirstName(),user.getLastName(),user.getRole());
+        return userRepository.findByEmail(email).orElseThrow(() -> new Exception("an Error has ocurred"));
     }
 
     //segun entiendo este metodo no sirve mas por que se maneja en el AuthenticationService

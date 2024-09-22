@@ -43,8 +43,7 @@ public class CatalogController {
     @GetMapping("/recent")
     public ResponseEntity<List<Product>> getRecentlyViewedProducts() throws Exception{
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        UserDTO user = userService.getUserByEmail(auth.getName());
-        User user_final = new User(user.getId(),user.getFirstName(),user.getEmail(),user.getPassword(),user.getFirstName(),user.getLastName(),user.getRole());
+        User user_final = userService.getUserByEmail(auth.getName());
         List<Product> products = productService.getRecentlyViewedProducts(user_final);
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
@@ -54,8 +53,7 @@ public class CatalogController {
     public ResponseEntity<ProductDTO> getProductDetail(@PathVariable Long productId) throws Exception{
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        UserDTO user = userService.getUserByEmail(auth.getName());
-        User user_final = new User(user.getId(),user.getFirstName(),user.getEmail(),user.getPassword(),user.getFirstName(),user.getLastName(),user.getRole());
+        User user_final = userService.getUserByEmail(auth.getName());
         ProductDTO productDetail = productService.getProductDetail(productId,user_final);
         return new ResponseEntity<>(productDetail, HttpStatus.OK);
     }
@@ -64,23 +62,10 @@ public class CatalogController {
     @PostMapping("/product/{productId}/favorite")
     public ResponseEntity<Void> addToFavorites(@PathVariable Long productId) throws Exception{
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        UserDTO user = userService.getUserByEmail(auth.getName());
-        User user_final = new User(user.getId(),user.getFirstName(),user.getEmail(),user.getPassword(),user.getFirstName(),user.getLastName(),user.getRole());
+        User user_final = userService.getUserByEmail(auth.getName());
         productService.addToFavorites(productId, user_final);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    // Agregar producto al carrito
-    @PostMapping("/product/{productId}/basket")
-    public ResponseEntity<Void> addToBasket(@PathVariable Long productId) throws Exception{
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        UserDTO user = userService.getUserByEmail(auth.getName());
-        User user_final = new User(user.getId(),user.getFirstName(),user.getEmail(),user.getPassword(),user.getFirstName(),user.getLastName(),user.getRole());
-        boolean added = productService.addToBasket(productId, user_final);
-        if (!added) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT); // Conflicto si no hay stock
-        }
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 }
 
