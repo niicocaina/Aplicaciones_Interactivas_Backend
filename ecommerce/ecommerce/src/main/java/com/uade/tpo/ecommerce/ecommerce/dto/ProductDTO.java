@@ -2,21 +2,17 @@ package com.uade.tpo.ecommerce.ecommerce.dto;
 
 import com.uade.tpo.ecommerce.ecommerce.repository.entity.Category;
 import com.uade.tpo.ecommerce.ecommerce.repository.entity.Product;
-<<<<<<< HEAD:ecommerce/ecommerce/src/main/java/com/uade/tpo/ecommerce/ecommerce/dto/ProductInBasketDTO.java
-import jakarta.persistence.*;
-=======
->>>>>>> nico:ecommerce/ecommerce/src/main/java/com/uade/tpo/ecommerce/ecommerce/dto/ProductDTO.java
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.util.*;
+import java.awt.*;
 
-@Data
-@Builder
+@Getter
+@Setter
 @AllArgsConstructor
-@NoArgsConstructor
+@Builder
 public class ProductDTO {
 
     private Long id;
@@ -25,6 +21,7 @@ public class ProductDTO {
     private int price;
     private int promotionalPrice;
     private int stock;
+    private boolean featured;
     private Category category;
     private String img1;
     private String img2;
@@ -32,20 +29,6 @@ public class ProductDTO {
     private String img4;
     private String img5;
 
-<<<<<<< HEAD:ecommerce/ecommerce/src/main/java/com/uade/tpo/ecommerce/ecommerce/dto/ProductInBasketDTO.java
-    private String imgUrl;
-
-    public ProductDTO(Product product) {
-        this.id = product.getProductId();
-        this.name = product.getName();
-        this.description = product.getDescription();
-        this.price = product.getPrice();
-        this.promotionalPrice = product.getPromotionalPrice();
-        this.stock = product.getStock();
-        this.imgUrl = product.getImageUrl();
-    }
-
-=======
     public Product toProduct(){
         return Product.builder()
                 .productId(this.getId())
@@ -62,5 +45,4 @@ public class ProductDTO {
                 .img5(this.getImg5())
                 .build();
     }
->>>>>>> nico:ecommerce/ecommerce/src/main/java/com/uade/tpo/ecommerce/ecommerce/dto/ProductDTO.java
 }

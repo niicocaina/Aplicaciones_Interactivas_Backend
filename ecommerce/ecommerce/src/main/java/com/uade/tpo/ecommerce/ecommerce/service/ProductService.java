@@ -27,9 +27,13 @@ public class ProductService {
 
     @Autowired
     private BasketRepository basketRepository;
+    @Autowired
+    private BasketService basketService;
 
     public List<Product> getFeaturedProducts() {
         return productRepository.findFeaturedProducts();
+    }
+
     public ProductDTO getProductById(Long id) throws Exception{
         Product product = productRepository.findById(id).
                 orElseThrow(() -> new Exception("No se ha encontrado el producto"));
@@ -42,6 +46,8 @@ public class ProductService {
 
     public List<Product> getRecentlyViewedProducts(User user) {
         return productRepository.findRecentlyViewedByUser(user.getId());
+    }
+
     public void saveNewProduct(ProductDTO productDTO) throws Exception{
         try {
             Product product = productDTO.toProduct();
@@ -59,7 +65,7 @@ public class ProductService {
         recent.setUser(user);
         recent.setViewedAt(LocalDateTime.now());
         recentlyViewedRepository.save(recent);
-        return new ProductDTO(product);
+        return product.toProductDTO();
     }
 
     public void addToFavorites(Long productId, User user) {
@@ -67,6 +73,8 @@ public class ProductService {
         favorite.setProductId(productId);
         favorite.setUser(user);
         favoriteRepository.save(favorite);
+    }
+
     public void deleteProductById(Long id) throws Exception{
         try {
             productRepository.deleteById(id);
@@ -80,11 +88,12 @@ public class ProductService {
                 .orElseThrow(() -> new Exception("PRoducto no encontrado"));
 
         if (product.getStock() > 0) {
-            Basket basket = new Basket();
-            basket.setUser(user);
-            basket.setProductId(productId);
-            basketRepository.save(basket);
+            basketService.addProductToBasket(user.getEmail(), productId, 1);
             return true;
+        }
+        return false;
+    }
+
     public void updateStockById(Long id, Integer newStock) throws Exception{
         // Busca el producto existente por ID
         Product product = productRepository.findById(id)
@@ -97,6 +106,5 @@ public class ProductService {
         }catch (Exception e){
             throw new Exception("No se ha podido actualizar el stock del producto");
         }
-        return false;
     }
 }

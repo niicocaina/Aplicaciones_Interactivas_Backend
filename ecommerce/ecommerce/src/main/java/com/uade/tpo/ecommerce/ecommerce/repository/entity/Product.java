@@ -19,6 +19,7 @@ public class Product {
     private int price;
     private int promotionalPrice;
     private int stock;
+    private boolean featured;
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;

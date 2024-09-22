@@ -20,7 +20,7 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false, unique = true)
-    private String name;
+    private String userName;
     @Column(nullable = false, unique = true)
     private String email;
     @Column(nullable = false)
@@ -32,8 +32,8 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
-    /*@Column(nullable = false)
-    private Date birthDate;*/
+    @Column(nullable = false)
+    private Date birthDate;
 
 
     @Override
