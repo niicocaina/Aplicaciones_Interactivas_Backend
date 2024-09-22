@@ -6,29 +6,31 @@ import com.uade.tpo.ecommerce.ecommerce.repository.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import com.uade.tpo.ecommerce.ecommerce.repository.entity.Role;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserDTO {
  private Long id;
  private String email;
  private String password;
- private String name;
+ private String userName;
+ private String firstName;
  private String lastName;
  private Role role;
- private List<Basket> baskets;
 
- public UserDTO() {}
-
- public UserDTO(User user) {
-  this.id = user.getId();
-  this.lastName = user.getLastName();
-  this.name = user.getName();
-  this.email = user.getEmail();
-  this.password = user.getPassword();
-  this.role = user.getRole();
-  this.baskets = user.getBaskets();
+ public User toUser(){
+    User user = new User();
+    user.setId(this.id);
+    user.setLastName(this.lastName);
+    user.setUserName(this.userName);
+    user.setEmail(this.email);
+    user.setPassword(this.password);
+    user.setRole(this.role);
+    return user;
  }
 
 }

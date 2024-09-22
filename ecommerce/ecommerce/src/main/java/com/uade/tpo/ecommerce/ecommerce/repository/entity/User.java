@@ -1,5 +1,6 @@
 package com.uade.tpo.ecommerce.ecommerce.repository.entity;
 
+import com.uade.tpo.ecommerce.ecommerce.dto.UserDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -34,6 +35,17 @@ public class User implements UserDetails {
     private Role role;
     @Column(nullable = false)
     private Date birthDate;
+
+    public UserDTO toUserDTO(){
+        UserDTO user = new UserDTO();
+        user.setId(this.id);
+        user.setLastName(this.lastName);
+        user.setUserName(this.userName);
+        user.setEmail(this.email);
+        user.setPassword(this.password);
+        user.setRole(this.role);
+        return user;
+    }
 
 
     @Override

@@ -1,9 +1,6 @@
 package com.uade.tpo.ecommerce.ecommerce.service;
 
-import com.uade.tpo.ecommerce.ecommerce.dto.BasketDTO;
-import com.uade.tpo.ecommerce.ecommerce.dto.BasketSummaryDTO;
-import com.uade.tpo.ecommerce.ecommerce.dto.ProductBasketDTO;
-import com.uade.tpo.ecommerce.ecommerce.dto.ProductInBasketDTO;
+import com.uade.tpo.ecommerce.ecommerce.dto.*;
 import com.uade.tpo.ecommerce.ecommerce.repository.BasketRepository;
 import com.uade.tpo.ecommerce.ecommerce.repository.ProductBasketRepository;
 import com.uade.tpo.ecommerce.ecommerce.repository.ProductRepository;
@@ -57,7 +54,8 @@ public class BasketService {
     }
 
     public BasketDTO addProductToBasket(String email, Long productId, int quiantity) throws Exception {
-        User user = userService.getUserByEmail(email);
+        UserDTO user_dto = userService.getUserByEmail(email);
+        User user = user_dto.toUser();
         Basket basket = basketRepository.findBasketByUser(user).orElseGet(() -> createNewBasketForUser(user));
         Product product = productRepository.findById(productId).orElseThrow(() -> new Exception("No se encontro el producto"));
         Optional<ProductBasket> existingProductBasket = productBasketRepository.findByBasketAndProduct(basket, product);
@@ -79,7 +77,8 @@ public class BasketService {
     }
 
     public void removeProductFromBasket(String email, Long productId) throws Exception {
-        User user = userService.getUserByEmail(email);
+        UserDTO user_dto = userService.getUserByEmail(email);
+        User user = user_dto.toUser();
         Basket basket = basketRepository.findBasketByUser(user)
                 .orElseThrow(() -> new Exception("No existe el carrito"));
         Product product = productRepository.findById(productId)
@@ -90,7 +89,8 @@ public class BasketService {
     }
 
     public void clearBasket(String email) throws Exception {
-        User user = userService.getUserByEmail(email);
+        UserDTO user_dto = userService.getUserByEmail(email);
+        User user = user_dto.toUser();
         Basket basket = basketRepository.findBasketByUser(user)
                 .orElseThrow(() -> new Exception("No existe el carrito"));
         List<ProductBasket> productBasketList = productBasketRepository.findByBasket(basket);
@@ -99,7 +99,8 @@ public class BasketService {
     }
 
     public Basket getBasketByUserEmail(String email) throws Exception {
-        User user = userService.getUserByEmail(email);
+        UserDTO user_dto = userService.getUserByEmail(email);
+        User user = user_dto.toUser();
         return basketRepository.findBasketByUser(user).orElse(null);
     }
 
@@ -124,7 +125,8 @@ public class BasketService {
     }
 
     public BasketSummaryDTO getBasketSummaryByUserEmail(String email) throws Exception {
-        User user = userService.getUserByEmail(email);
+        UserDTO user_dto = userService.getUserByEmail(email);
+        User user = user_dto.toUser();
         Basket basket = basketRepository.findBasketByUser(user)
                 .orElseThrow(() -> new Exception("Carrito no encontrado"));
         return mapToBasketSummaryDTO(basket);

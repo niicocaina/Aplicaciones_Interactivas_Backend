@@ -43,8 +43,9 @@ public class CatalogController {
     @GetMapping("/recent")
     public ResponseEntity<List<Product>> getRecentlyViewedProducts() throws Exception{
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user_final = userService.getUserByEmail(auth.getName());
-        List<Product> products = productService.getRecentlyViewedProducts(user_final);
+        UserDTO user_final = userService.getUserByEmail(auth.getName());
+        User user = user_final.toUser();
+        List<Product> products = productService.getRecentlyViewedProducts(user);
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
@@ -53,8 +54,9 @@ public class CatalogController {
     public ResponseEntity<ProductDTO> getProductDetail(@PathVariable Long productId) throws Exception{
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user_final = userService.getUserByEmail(auth.getName());
-        ProductDTO productDetail = productService.getProductDetail(productId,user_final);
+        UserDTO user_final = userService.getUserByEmail(auth.getName());
+        User user = user_final.toUser();;
+        ProductDTO productDetail = productService.getProductDetail(productId,user);
         return new ResponseEntity<>(productDetail, HttpStatus.OK);
     }
 
@@ -62,8 +64,9 @@ public class CatalogController {
     @PostMapping("/product/{productId}/favorite")
     public ResponseEntity<Void> addToFavorites(@PathVariable Long productId) throws Exception{
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user_final = userService.getUserByEmail(auth.getName());
-        productService.addToFavorites(productId, user_final);
+        UserDTO user_final = userService.getUserByEmail(auth.getName());
+        User user = user_final.toUser();
+        productService.addToFavorites(productId, user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

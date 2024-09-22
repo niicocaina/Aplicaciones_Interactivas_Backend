@@ -15,13 +15,13 @@ public class UserService {
 
     public UserDTO getUserDTOById(Long id) throws Exception {
         User user = userRepository.findById(id).orElseThrow(() -> new Exception("an Error has ocurred"));
-        return new UserDTO(user);
+        return user.toUserDTO();
     }
 
     public UserDTO getUserByEmail(String email) throws Exception {
 
         User user = userRepository.findByEmail(email).orElseThrow(() -> new Exception("an Error has ocurred"));
-        return new UserDTO(user);
+        return user.toUserDTO();
     }
 
 }

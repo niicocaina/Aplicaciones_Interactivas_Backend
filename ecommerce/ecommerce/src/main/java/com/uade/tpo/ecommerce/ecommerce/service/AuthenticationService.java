@@ -23,12 +23,13 @@ public class AuthenticationService {
     public AuthenticationResponse register(RegisterRequest request) {
         System.out.println(request);
         var user = User.builder()
-                .userName(request.getName())
+                .userName(request.getUserName())
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(request.getRole())
+                .birthDate(request.getBirthDate())
                 .build();
         System.out.println(user);
         repository.save(user);
