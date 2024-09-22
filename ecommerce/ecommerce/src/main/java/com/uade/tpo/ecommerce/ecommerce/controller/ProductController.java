@@ -1,4 +1,40 @@
 package com.uade.tpo.ecommerce.ecommerce.controller;
 
+import com.uade.tpo.ecommerce.ecommerce.dto.ProductDTO;
+import com.uade.tpo.ecommerce.ecommerce.service.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("api/v1/products")
 public class ProductController {
+
+    @Autowired
+    private ProductService productService;
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductDTO> getProduct(@PathVariable Long id) throws Exception {
+        ProductDTO product = productService.getProductById(id);
+        return ResponseEntity.ok(product);
+    }
+
+    @PostMapping
+    public ResponseEntity<HttpStatus> createProduct(@RequestBody ProductDTO productDTO) throws Exception {
+        productService.saveNewProduct(productDTO);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<HttpStatus> deleteProduct(@PathVariable Long id) throws Exception{
+        productService.deleteProductById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PatchMapping("/{id}/{newStock}")
+    public ResponseEntity<HttpStatus> updateStock(@PathVariable Long id, @PathVariable Integer newStock) throws Exception{
+        productService.updateStockById(id, newStock);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
 }

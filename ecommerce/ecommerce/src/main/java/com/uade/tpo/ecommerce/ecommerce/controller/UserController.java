@@ -21,4 +21,5 @@ public class UserController {
         UserDTO user = userService.getUserDTOById(id);
         return ResponseEntity.ok(user);
     }
+
 }
