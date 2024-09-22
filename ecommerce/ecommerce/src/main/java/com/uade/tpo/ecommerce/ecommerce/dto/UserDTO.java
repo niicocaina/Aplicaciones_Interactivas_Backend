@@ -11,10 +11,10 @@ import java.util.List;
 
 @Data
 public class UserDTO {
- private Long userId;
+ private Long id;
  private String email;
  private String password;
- private String firstName;
+ private String name;
  private String lastName;
  private Role role;
  private List<Basket> baskets;
@@ -22,9 +22,9 @@ public class UserDTO {
  public UserDTO() {}
 
  public UserDTO(User user) {
-  this.userId = user.getUserId();
+  this.id = user.getId();
   this.lastName = user.getLastName();
-  this.firstName = user.getFirstName();
+  this.name = user.getName();
   this.email = user.getEmail();
   this.password = user.getPassword();
   this.role = user.getRole();

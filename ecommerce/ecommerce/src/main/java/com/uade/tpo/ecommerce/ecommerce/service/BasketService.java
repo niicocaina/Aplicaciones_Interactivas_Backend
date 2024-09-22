@@ -32,7 +32,7 @@ public class BasketService {
 
     private BasketDTO mapToBasketDTO(Basket basket) throws Exception {
         BasketDTO basketDTO = new BasketDTO();
-        basketDTO.setBasketId(basket.getBasketId());
+        basketDTO.setBasketId(basket.getId());
         basketDTO.setCreationDate(basket.getCreationDate());
         basketDTO.setUser(basket.getUser());
         basketDTO.setProducts(basket.getProducts());
