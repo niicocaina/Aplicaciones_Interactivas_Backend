@@ -49,6 +49,9 @@ public class ProductService {
     }
 
     public void saveNewProduct(ProductDTO productDTO) throws Exception{
+        if(productDTO.getStock() < 0 && productDTO.getPrice()<0 && productDTO.getPromotionalPrice()<0){
+            throw new Exception("El precio o el stock no pueden ser negativos");
+        }
         try {
             Product product = productDTO.toProduct();
             productRepository.save(product);
@@ -96,6 +99,9 @@ public class ProductService {
 
     public void updateStockById(Long id, Integer newStock) throws Exception{
         // Busca el producto existente por ID
+        if(newStock < 0){
+            throw new Exception("El stock no puede ser negativo");
+        }
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new Exception("Producto no encontrado con id: "+id));
         // Actualiza solo el campo de stock

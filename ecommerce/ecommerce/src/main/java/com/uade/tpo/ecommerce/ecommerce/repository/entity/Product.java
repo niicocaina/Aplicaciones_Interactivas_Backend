@@ -14,10 +14,13 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
+    @Column(nullable = false,unique = true)
     private String name;
     private String description;
+    @Column(nullable = false)
     private int price;
     private int promotionalPrice;
+    @Column(nullable = false)
     private int stock;
     private boolean featured;
     @ManyToOne
