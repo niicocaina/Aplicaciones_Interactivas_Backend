@@ -4,6 +4,7 @@ import com.uade.tpo.ecommerce.ecommerce.dto.ProductDTO;
 import com.uade.tpo.ecommerce.ecommerce.dto.UserDTO;
 import com.uade.tpo.ecommerce.ecommerce.repository.entity.Product;
 import com.uade.tpo.ecommerce.ecommerce.repository.entity.User;
+import com.uade.tpo.ecommerce.ecommerce.service.FavoriteService;
 import com.uade.tpo.ecommerce.ecommerce.service.ProductService;
 import com.uade.tpo.ecommerce.ecommerce.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public class CatalogController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private FavoriteService favoriteService;
 
     // Listado de productos destacados
     @GetMapping("/featured")
@@ -73,7 +77,15 @@ public class CatalogController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserDTO user_final = userService.getUserByEmail(auth.getName());
         User user = user_final.toUser();
-        productService.addToFavorites(productId, user);
+        favoriteService.addToFavorites(productId, user);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @DeleteMapping("/product/{productId}/favorite")
+    public ResponseEntity<Void> removeFavorites(@PathVariable Long productId) throws Exception{
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserDTO user_final = userService.getUserByEmail(auth.getName());
+        User user = user_final.toUser();
+        favoriteService.removeProductFromFavorites(user, productId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
