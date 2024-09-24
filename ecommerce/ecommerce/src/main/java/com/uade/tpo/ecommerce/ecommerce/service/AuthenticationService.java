@@ -3,6 +3,7 @@ package com.uade.tpo.ecommerce.ecommerce.service;
 import com.uade.tpo.ecommerce.ecommerce.controller.auth.AuthenticationResponse;
 import com.uade.tpo.ecommerce.ecommerce.controller.auth.AuthenticationRequest;
 import com.uade.tpo.ecommerce.ecommerce.controller.auth.RegisterRequest;
+import com.uade.tpo.ecommerce.ecommerce.dto.UpdatePasswordDTO;
 import com.uade.tpo.ecommerce.ecommerce.repository.UserRepository;
 import com.uade.tpo.ecommerce.ecommerce.repository.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -57,4 +58,15 @@ public class AuthenticationService {
                 .accessToken(jwtToken)
                 .build();
     }
+    public void updatePassword(String email, UpdatePasswordDTO updatePasswordDTO) throws Exception {
+        User user = repository.findByEmail(email)
+                .orElseThrow(() -> new Exception("Usuario no encontrado"));
+
+        if (!passwordEncoder.matches(updatePasswordDTO.getCurrentPassword(), user.getPassword())) {
+            throw new Exception("La contraseña actual es incorrecta");
+        }
+        user.setPassword(passwordEncoder.encode(updatePasswordDTO.getNewPassword()));
+        repository.save(user);
+    }
+
 }
