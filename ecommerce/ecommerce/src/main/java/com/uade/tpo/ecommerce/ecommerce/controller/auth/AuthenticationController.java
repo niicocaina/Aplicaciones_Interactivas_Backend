@@ -25,4 +25,15 @@ public class AuthenticationController {
             @RequestBody AuthenticationRequest request) throws Exception {
         return ResponseEntity.ok(service.authenticate(request));
     }
+
+    @PutMapping("/update-password")
+    public ResponseEntity<String> updatePassword(@RequestBody UpdatePasswordDTO updatePasswordDTO, Principal principal) {
+        try {
+            String email = principal.getName();
+            service.updatePassword(email, updatePasswordDTO);
+            return ResponseEntity.ok("Contraseña actualizada correctamente");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }
