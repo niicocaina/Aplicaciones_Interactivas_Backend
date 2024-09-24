@@ -32,10 +32,8 @@ public class FavoriteService {
     }
 
     public List<Product> getFavoritesForUser(User user) throws Exception {
-        // Obtener la lista de favoritos del usuario
         List<Favorite> favorites = favoriteRepository.findByUser(user);
 
-        // Convertir los productIds a objetos Product, manejando posibles errores
         List<Product> favoriteProducts = favorites.stream()
                 .map(favorite -> {
                     try {
@@ -45,7 +43,7 @@ public class FavoriteService {
                         return null;
                     }
                 })
-                .filter(Objects::nonNull) // Filtra los productos nulos (que no se encontraron)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
         return favoriteProducts;
