@@ -13,7 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/Basket")
+@RequestMapping("api/v1/basket")
 public class BasketController {
 
     @Autowired
