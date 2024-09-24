@@ -89,5 +89,14 @@ public class CatalogController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping("/favorites")
+    public ResponseEntity<List<Product>> getFavoritesProducts() throws Exception{
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserDTO user_final = userService.getUserByEmail(auth.getName());
+        User user = user_final.toUser();
+        List<Product> products = favoriteService.getFavoritesForUser(user);
+        return new ResponseEntity<>(products, HttpStatus.OK);
+    }
+
 }
 
