@@ -22,5 +22,4 @@ public class Basket {
     @OneToMany(mappedBy = "basket")
     private List<ProductBasket> products;
 
-
 }

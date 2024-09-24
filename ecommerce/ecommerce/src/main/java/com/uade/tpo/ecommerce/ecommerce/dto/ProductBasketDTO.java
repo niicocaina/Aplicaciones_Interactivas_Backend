@@ -10,7 +10,7 @@ public class ProductBasketDTO {
     private Long productBasketId;
     private int quantity;
     private Basket basket;
-    private Product product;
+    private ProductDTO product;
 
     public ProductBasketDTO() {}
 }

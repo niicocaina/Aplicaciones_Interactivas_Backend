@@ -1,7 +1,9 @@
 package com.uade.tpo.ecommerce.ecommerce.controller;
 
 import com.uade.tpo.ecommerce.ecommerce.dto.BasketSummaryDTO;
+import com.uade.tpo.ecommerce.ecommerce.dto.CheckOutDTO;
 import com.uade.tpo.ecommerce.ecommerce.repository.entity.Basket;
+import com.uade.tpo.ecommerce.ecommerce.repository.entity.CheckOut;
 import com.uade.tpo.ecommerce.ecommerce.service.BasketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,7 +19,7 @@ public class BasketController {
     @Autowired
     private BasketService basketService;
 
-    @PostMapping("/add/")
+    @PostMapping("/add")
     public ResponseEntity<Void> addProductToBasket(@RequestBody BasketRequest basketRequest) throws Exception{
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
@@ -42,5 +44,11 @@ public class BasketController {
         return ResponseEntity.ok(basketSummaryDTO);
     }
 
-
+    @PostMapping("/checkout")
+    public ResponseEntity<CheckOutDTO> checkout() throws Exception {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        CheckOut checkout = basketService.checkout(email);
+        return ResponseEntity.ok(checkout.toDTO());
+    }
 }

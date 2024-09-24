@@ -2,16 +2,13 @@ package com.uade.tpo.ecommerce.ecommerce.dto;
 
 import com.uade.tpo.ecommerce.ecommerce.repository.entity.Category;
 import com.uade.tpo.ecommerce.ecommerce.repository.entity.Product;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.awt.*;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class ProductDTO {
 

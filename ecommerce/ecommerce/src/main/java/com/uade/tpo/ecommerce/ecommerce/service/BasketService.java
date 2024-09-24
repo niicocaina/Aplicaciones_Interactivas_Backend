@@ -2,12 +2,10 @@ package com.uade.tpo.ecommerce.ecommerce.service;
 
 import com.uade.tpo.ecommerce.ecommerce.dto.*;
 import com.uade.tpo.ecommerce.ecommerce.repository.BasketRepository;
+import com.uade.tpo.ecommerce.ecommerce.repository.CheckOutRepository;
 import com.uade.tpo.ecommerce.ecommerce.repository.ProductBasketRepository;
 import com.uade.tpo.ecommerce.ecommerce.repository.ProductRepository;
-import com.uade.tpo.ecommerce.ecommerce.repository.entity.Basket;
-import com.uade.tpo.ecommerce.ecommerce.repository.entity.Product;
-import com.uade.tpo.ecommerce.ecommerce.repository.entity.ProductBasket;
-import com.uade.tpo.ecommerce.ecommerce.repository.entity.User;
+import com.uade.tpo.ecommerce.ecommerce.repository.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +24,8 @@ public class BasketService {
     private ProductBasketRepository productBasketRepository;
     @Autowired
     private UserService userService;
+    @Autowired
+    private CheckOutRepository checkOutRepository;
 
     private BasketDTO mapToBasketDTO(Basket basket) throws Exception {
         BasketDTO basketDTO = new BasketDTO();
@@ -35,15 +35,6 @@ public class BasketService {
         basketDTO.setProducts(basket.getProducts());
 
         return basketDTO;
-    }
-
-    private ProductBasketDTO mapToProductBasketDTO(ProductBasket productBasket) {
-        ProductBasketDTO productBasketDTO = new ProductBasketDTO();
-        productBasketDTO.setProductBasketId(productBasket.getProductBasketId());
-        productBasketDTO.setQuantity(productBasket.getQuantity());
-        productBasketDTO.setProduct(productBasket.getProduct());
-        productBasketDTO.setBasket(productBasket.getBasket());
-        return productBasketDTO;
     }
 
     private Basket createNewBasketForUser(User user) {
@@ -98,12 +89,6 @@ public class BasketService {
 
     }
 
-    public Basket getBasketByUserEmail(String email) throws Exception {
-        UserDTO user_dto = userService.getUserByEmail(email);
-        User user = user_dto.toUser();
-        return basketRepository.findBasketByUser(user).orElse(null);
-    }
-
     private BasketSummaryDTO mapToBasketSummaryDTO(Basket basket) {
         BasketSummaryDTO basketSummaryDTO = new BasketSummaryDTO();
         basketSummaryDTO.setCreationDate(basket.getCreationDate());
@@ -132,11 +117,48 @@ public class BasketService {
         return mapToBasketSummaryDTO(basket);
     }
 
-    /*public Double calculateTotal(Long basketId) {
-        // Lógica para calcular el total del carrito
+    public Double calculateTotal(String email) throws Exception {
+        UserDTO user_dto = userService.getUserByEmail(email);
+        User user = user_dto.toUser();
+        Basket basket = basketRepository.findBasketByUser(user)
+                .orElseThrow(() -> new Exception("No existe el carrito"));
+        double finalPrice = 0;
+        for (ProductBasket productBasket : basket.getProducts()){
+            finalPrice += productBasket.getProduct().getPrice();
+        }
+        return finalPrice;
     }
 
-    public Checkout checkout(Long userId) {
-        // Lógica para manejar el checkout
-    }*/
+    public CheckOut checkout(String email) throws Exception {
+        UserDTO user_dto = userService.getUserByEmail(email);
+        User user = user_dto.toUser();
+        Basket basket = basketRepository.findBasketByUser(user)
+                .orElseThrow(() -> new Exception("No existe el carrito"));
+
+        for (ProductBasket productBasket : basket.getProducts()) {
+            Product product = productBasket.getProduct();
+
+            if (product.getStock() < productBasket.getQuantity()) {
+                throw new Exception("No hay suficiente stock para el producto: " + product.getName());
+            }
+        }
+
+        for (ProductBasket productBasket : basket.getProducts()) {
+            Product product = productBasket.getProduct();
+            product.setStock(product.getStock() - productBasket.getQuantity());
+            productRepository.save(product);
+        }
+
+        double totalPrice = calculateTotal(email);
+        CheckOut checkOut = new CheckOut();
+        checkOut.setTotal(totalPrice);
+        checkOut.setTransactionDate(new Date());
+        checkOut.setUser(user);
+        checkOut.setProducts(basket.getProducts());
+
+        checkOutRepository.save(checkOut);
+        clearBasket(email);
+
+        return checkOut;
+    }
 }
