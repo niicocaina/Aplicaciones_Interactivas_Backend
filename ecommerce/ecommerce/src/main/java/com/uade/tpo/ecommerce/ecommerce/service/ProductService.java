@@ -89,7 +89,9 @@ public class ProductService {
         return product.toProductDTO();
     }
 
-    public void addToFavorites(Long productId, User user) {
+
+
+    public void removeFavorites(Long productId, User user) {
         Favorite favorite = new Favorite();
         favorite.setProductId(productId);
         favorite.setUser(user);
