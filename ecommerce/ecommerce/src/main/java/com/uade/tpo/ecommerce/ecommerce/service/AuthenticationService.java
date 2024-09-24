@@ -39,13 +39,19 @@ public class AuthenticationService {
                 .build();
     }
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+    public AuthenticationResponse authenticate(AuthenticationRequest request) throws Exception {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
-                        request.getPassword()));
+                        request.getPassword()
+                ));
+
         var user = repository.findByEmail(request.getEmail())
-                .orElseThrow();
+                .orElseThrow(()-> new Exception("Usuario o contraseña invalidos"));
+        // Verificar si la contraseña es correcta
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new Exception("Usuario o contraseña invalidos");
+        }
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
