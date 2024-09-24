@@ -5,6 +5,8 @@ import com.uade.tpo.ecommerce.ecommerce.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -26,6 +28,16 @@ public class ProductController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @PostMapping("/featured/{productId}")
+    public ResponseEntity<Void> addToFeatured(@PathVariable Long productId) throws Exception{
+        productService.addToFeatured(productId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @DeleteMapping("/featured/{productId}")
+    public ResponseEntity<Void> removeFeatured(@PathVariable Long productId) throws Exception{
+        productService.removeFeatured(productId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteProduct(@PathVariable Long id) throws Exception{
         productService.deleteProductById(id);

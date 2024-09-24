@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/v1/catalog")
@@ -30,6 +31,12 @@ public class CatalogController {
     public ResponseEntity<List<Product>> getFeaturedProducts() {
         List<Product> products = productService.getFeaturedProducts();
         return new ResponseEntity<>(products, HttpStatus.OK);
+    }
+
+    @GetMapping("/products")
+    public ResponseEntity<Map<String, List<Product>>> getProductsGroupedByCategory() {
+        Map<String, List<Product>> productsGroupedByCategory = productService.getProductsGroupedByCategory();
+        return new ResponseEntity<>(productsGroupedByCategory, HttpStatus.OK);
     }
 
     // Listado de productos por categoría

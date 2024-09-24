@@ -18,5 +18,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT p FROM Product p JOIN RecentlyViewed rv ON p.productId = rv.product.productId WHERE rv.user.id = :userId")
     List<Product> findRecentlyViewedByUser(@Param("userId") Long userId);
 
+    @Query("SELECT c.name as categoryName, p FROM Product p JOIN p.category c ORDER BY c.name")
+    List<Object[]> findAllProductsGroupedByCategory();
 }
 

@@ -11,7 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ProductService {
@@ -42,6 +45,21 @@ public class ProductService {
 
     public List<Product> getProductsByCategory(Long categoryId) {
         return productRepository.findByCategoryId(categoryId);
+    }
+
+    public Map<String, List<Product>> getProductsGroupedByCategory() {
+        List<Object[]> results = productRepository.findAllProductsGroupedByCategory();
+
+        Map<String, List<Product>> groupedProducts = new HashMap<>();
+
+        for (Object[] result : results) {
+            String categoryName = (String) result[0];
+            Product product = (Product) result[1];
+
+            groupedProducts.computeIfAbsent(categoryName, k -> new ArrayList<>()).add(product);
+        }
+
+        return groupedProducts;
     }
 
     public List<Product> getRecentlyViewedProducts(User user) {
@@ -78,6 +96,23 @@ public class ProductService {
         favoriteRepository.save(favorite);
     }
 
+    public void addToFeatured(Long productId) throws Exception{
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new Exception("Producto no encontrado con id: "+productId));;
+        product.setFeatured(true);
+        productRepository.save(product);
+    }
+
+    public void removeFeatured(Long productId) throws Exception{
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new Exception("Producto no encontrado con id: "+productId));;
+        product.setFeatured(false);
+        productRepository.save(product);
+    }
+
+
     public void deleteProductById(Long id) throws Exception{
         try {
             productRepository.deleteById(id);
@@ -86,16 +121,7 @@ public class ProductService {
         }
     }
 
-    public boolean addToBasket(Long productId, User user) throws Exception{
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new Exception("PRoducto no encontrado"));
 
-        if (product.getStock() > 0) {
-            basketService.addProductToBasket(user.getEmail(), productId, 1);
-            return true;
-        }
-        return false;
-    }
 
     public void updateStockById(Long id, Integer newStock) throws Exception{
         // Busca el producto existente por ID
