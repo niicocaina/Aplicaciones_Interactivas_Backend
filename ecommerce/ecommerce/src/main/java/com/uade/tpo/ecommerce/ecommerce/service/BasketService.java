@@ -150,11 +150,20 @@ public class BasketService {
         }
 
         double totalPrice = calculateTotal(email);
+
+        List<ProductBasket> copiedProducts = basket.getProducts().stream()
+                .map(pb -> {
+                    ProductBasket newProductBasket = new ProductBasket();
+                    newProductBasket.setProduct(pb.getProduct());
+                    newProductBasket.setQuantity(pb.getQuantity());
+                    return productBasketRepository.save(newProductBasket);
+                }).collect(Collectors.toList());
+
         CheckOut checkOut = new CheckOut();
         checkOut.setTotal(totalPrice);
         checkOut.setTransactionDate(new Date());
         checkOut.setUser(user);
-        checkOut.setProducts(basket.getProducts());
+        checkOut.setProducts(copiedProducts);
 
         checkOutRepository.save(checkOut);
         clearBasket(email);
