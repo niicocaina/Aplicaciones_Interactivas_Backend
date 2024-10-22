@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-
 @Service
 public class UserService {
     @Autowired
@@ -19,9 +18,7 @@ public class UserService {
     }
 
     public UserDTO getUserByEmail(String email) throws Exception {
-
         User user = userRepository.findByEmail(email).orElseThrow(() -> new Exception("an Error has ocurred"));
         return user.toUserDTO();
     }
-
 }
