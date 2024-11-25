@@ -20,6 +20,7 @@ public class ContactFormDTO {
     @NotNull (message="La problemática es obligatoria.")
     private String problem;
 
+    @NotNull (message="La carga de alguna imagen es obligatoria.")
     private MultipartFile [] photos;
 
     @NotNull(message = "La descripción del problema es obligatoria.")

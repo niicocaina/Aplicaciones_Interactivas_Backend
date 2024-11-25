@@ -29,7 +29,7 @@ public class ContactFormController {
                                                     @RequestParam("description") String description,
                                                     @RequestParam(value = "photos", required = false) MultipartFile[] photos) {
 
-        // Validación manual de los campos
+        // validacion
         List<String> validationErrors = new ArrayList<>();
 
         if (fullName == null || fullName.trim().isEmpty()) {
@@ -48,12 +48,11 @@ public class ContactFormController {
             validationErrors.add("La descripción debe tener al menos 10 caracteres.");
         }
 
-        // Si hay errores, devolver los mensajes
+
         if (!validationErrors.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Errores de validación: " + String.join(" ", validationErrors));
         }
 
-        // Crear el DTO manualmente con los parámetros validados
         ContactFormDTO contactFormDTO = new ContactFormDTO();
         contactFormDTO.setFullName(fullName);
         contactFormDTO.setProblem(problem);
@@ -61,7 +60,7 @@ public class ContactFormController {
         contactFormDTO.setPhotos(photos);
 
         try {
-            contactFormService.processContactForm(contactFormDTO); // Llamar al servicio
+            contactFormService.processContactForm(contactFormDTO);
             return ResponseEntity.ok("El problema ha sido registrado correctamente.");
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al guardar las fotos: " + e.getMessage());

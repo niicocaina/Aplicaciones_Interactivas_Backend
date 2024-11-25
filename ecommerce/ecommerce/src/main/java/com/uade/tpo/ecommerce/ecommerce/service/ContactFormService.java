@@ -53,7 +53,7 @@ public class ContactFormService {
     }
 
     private void saveFormData(ContactFormDTO contactFormDTO) {
-        List<String> filePaths = new ArrayList<>();  // guardar las rutas de las fotos
+        List<String> filePaths = new ArrayList<>();  // la lista es para guardar las rutas de las fotos
 
         if (contactFormDTO.getPhotos() != null) {
             for (MultipartFile file : contactFormDTO.getPhotos()) {
