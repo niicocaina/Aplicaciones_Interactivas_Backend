@@ -13,7 +13,7 @@ import jakarta.validation.constraints.Size;
 @NoArgsConstructor
 
 public class ContactFormDTO {
-    @NotNull (message = "El nombre y apellido.")
+    @NotNull (message = "El nombre y apellido es obligatorio.")
     @Size(min = 3, message ="El nombre y apellido debe tener al menos 3 caracteres.")
     private String fullName;
 

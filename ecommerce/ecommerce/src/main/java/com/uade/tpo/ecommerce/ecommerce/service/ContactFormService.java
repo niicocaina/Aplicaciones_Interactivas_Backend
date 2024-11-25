@@ -1,7 +1,6 @@
 package com.uade.tpo.ecommerce.ecommerce.service;
 
 import com.uade.tpo.ecommerce.ecommerce.dto.ContactFormDTO;
-import com.uade.tpo.ecommerce.ecommerce.repository.BasketRepository;
 import com.uade.tpo.ecommerce.ecommerce.repository.ContactFormRepository;
 import com.uade.tpo.ecommerce.ecommerce.repository.entity.ContactForm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +16,11 @@ import java.util.List;
 
 @Service
 public class ContactFormService {
+
     @Autowired
     private ContactFormRepository contactFormRepository;
 
     public void processContactForm(ContactFormDTO contactFormDTO) throws IOException {
-
         if (contactFormDTO.getPhotos() != null) {
             for (MultipartFile file : contactFormDTO.getPhotos()) {
                 saveImage(file);
@@ -37,32 +36,32 @@ public class ContactFormService {
                 String uploadDir = "uploads/contact-photos";
                 File uploadDirFile = new File(uploadDir);
                 if (!uploadDirFile.exists()) {
-                    uploadDirFile.mkdirs();  // Crear directorio si no existe
+                    uploadDirFile.mkdirs();
                 }
+
                 String filePath = uploadDir + File.separator + photo.getOriginalFilename();
-                Files.copy(photo.getInputStream(), Paths.get(filePath));  // Guardar el archivo
+                File file = new File(filePath);
+                if (file.exists()) {
+                    throw new IOException("El archivo ya existe: " + photo.getOriginalFilename());
+                }
+
+                Files.copy(photo.getInputStream(), Paths.get(filePath));
             } catch (IOException e) {
-                System.out.println("Error al guardar la imagen: " + e.getMessage());
-                throw new IOException("Error al guardar la imagen", e);
+                throw new IOException("No se pudo guardar la imagen: " + e.getMessage(), e);
             }
         }
     }
 
-
     private void saveFormData(ContactFormDTO contactFormDTO) {
-        System.out.println("Formulario recibido: ");
-        System.out.println("Nombre y apellido: " + contactFormDTO.getFullName());
-        System.out.println("Problemática: " + contactFormDTO.getProblem());
-        System.out.println("Descripción: " + contactFormDTO.getDescription());
-
-        List<String> filePaths = new ArrayList<>();  // Lista para almacenar las rutas de los archivos
+        List<String> filePaths = new ArrayList<>();  // guardar las rutas de las fotos
 
         if (contactFormDTO.getPhotos() != null) {
             for (MultipartFile file : contactFormDTO.getPhotos()) {
-                String filePath = file.getOriginalFilename(); // Llamamos al método para guardar la imagen y obtener la ruta
-                filePaths.add(filePath); // Agregamos la ruta del archivo a la lista
+                String filePath = file.getOriginalFilename();
+                filePaths.add(filePath);
             }
         }
+
         ContactForm contactForm = new ContactForm();
         contactForm.setFullName(contactFormDTO.getFullName());
         contactForm.setProblem(contactFormDTO.getProblem());
@@ -70,5 +69,4 @@ public class ContactFormService {
         contactForm.setPhotoPaths(String.join(";", filePaths));
         contactFormRepository.save(contactForm);
     }
-
-    }
+}
