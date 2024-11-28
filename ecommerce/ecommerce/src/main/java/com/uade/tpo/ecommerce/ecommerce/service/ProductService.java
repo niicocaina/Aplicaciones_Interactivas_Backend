@@ -11,10 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -41,6 +39,16 @@ public class ProductService {
         Product product = productRepository.findById(id).
                 orElseThrow(() -> new Exception("No se ha encontrado el producto"));
         return product.toProductDTO();
+    }
+
+    public List<ProductDTO> getProducts() throws Exception{
+        List<Product> products = productRepository.findAll();
+        if(products.isEmpty()){
+            throw new Exception("No se han encontrado productos");
+        }
+        return products.stream()
+                .map(Product::toProductDTO)
+                .collect(Collectors.toList());
     }
 
     public List<Product> getProductsByCategory(Long categoryId) {
@@ -79,7 +87,6 @@ public class ProductService {
     }
 
     public ProductDTO getProductDetail(Long productId,User user) throws Exception {
-
         Product product = productRepository.findById(productId).orElseThrow(() -> new Exception("Producto no encontrado"));
         RecentlyViewed recent = new RecentlyViewed();
         recent.setProduct(product);
@@ -88,8 +95,6 @@ public class ProductService {
         recentlyViewedRepository.save(recent);
         return product.toProductDTO();
     }
-
-
 
     public void removeFavorites(Long productId, User user) {
         Favorite favorite = new Favorite();
@@ -114,7 +119,6 @@ public class ProductService {
         productRepository.save(product);
     }
 
-
     public void deleteProductById(Long id) throws Exception{
         try {
             productRepository.deleteById(id);
@@ -122,8 +126,6 @@ public class ProductService {
             throw new Exception("No se ha podido eliminar el producto");
         }
     }
-
-
 
     public void updateStockById(Long id, Integer newStock) throws Exception{
         // Busca el producto existente por ID
@@ -139,6 +141,22 @@ public class ProductService {
             productRepository.save(product);
         }catch (Exception e){
             throw new Exception("No se ha podido actualizar el stock del producto");
+        }
+    }
+
+    public void updateProductById(Long id, ProductDTO productDTO) throws Exception{
+        Product product = productRepository.findById(id)
+                .orElseThrow(()-> new Exception("Producto no encontrado con id: "+id));
+        product.setName(productDTO.getName());
+        product.setDescription(productDTO.getDescription());
+        product.setCategory(productDTO.getCategory());
+        product.setStock(productDTO.getStock());
+        product.setPrice(productDTO.getPrice());
+        product.setPromotionalPrice(productDTO.getPromotionalPrice());
+        try{
+            productRepository.save(product);
+        } catch (Exception e) {
+            throw new Exception("No se ha podido actualizar el producto");
         }
     }
 }
