@@ -9,8 +9,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api/v1/products")
+@CrossOrigin(origins = "http://localhost:3030")
 public class ProductController {
 
     @Autowired
@@ -20,6 +23,12 @@ public class ProductController {
     public ResponseEntity<ProductDTO> getProduct(@PathVariable Long id) throws Exception {
         ProductDTO product = productService.getProductById(id);
         return ResponseEntity.ok(product);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ProductDTO>> getProducts() throws Exception {
+        List<ProductDTO> products = productService.getProducts();
+        return ResponseEntity.ok(products);
     }
 
     @PostMapping
@@ -47,6 +56,12 @@ public class ProductController {
     @PatchMapping("/{id}/{newStock}")
     public ResponseEntity<HttpStatus> updateStock(@PathVariable Long id, @PathVariable Integer newStock) throws Exception{
         productService.updateStockById(id, newStock);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<HttpStatus> updateProduct(@PathVariable Long id, @RequestBody ProductDTO productDTO) throws Exception{
+        productService.updateProductById(id, productDTO);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 }
