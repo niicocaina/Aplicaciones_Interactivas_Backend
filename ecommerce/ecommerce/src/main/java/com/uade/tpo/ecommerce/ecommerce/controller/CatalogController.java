@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3030")
 @RequestMapping("api/v1/catalog")
 public class CatalogController {
 
@@ -32,12 +33,14 @@ public class CatalogController {
 
     // Listado de productos destacados
     @GetMapping("/featured")
+    @CrossOrigin(origins = "http://localhost:3030")
     public ResponseEntity<List<Product>> getFeaturedProducts() {
         List<Product> products = productService.getFeaturedProducts();
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
     @GetMapping("/products")
+    @CrossOrigin(origins = "http://localhost:3030")
     public ResponseEntity<Map<String, List<Product>>> getProductsGroupedByCategory() {
         Map<String, List<Product>> productsGroupedByCategory = productService.getProductsGroupedByCategory();
         return new ResponseEntity<>(productsGroupedByCategory, HttpStatus.OK);
@@ -45,6 +48,7 @@ public class CatalogController {
 
     // Listado de productos por categoría
     @GetMapping("/category/{categoryId}")
+    @CrossOrigin(origins = "http://localhost:3030")
     public ResponseEntity<List<Product>> getProductsByCategory(@PathVariable Long categoryId) {
         List<Product> products = productService.getProductsByCategory(categoryId);
         return new ResponseEntity<>(products, HttpStatus.OK);
@@ -52,6 +56,7 @@ public class CatalogController {
 
     // Listado de productos vistos recientemente
     @GetMapping("/recent")
+    @CrossOrigin(origins = "http://localhost:3030")
     public ResponseEntity<List<Product>> getRecentlyViewedProducts() throws Exception{
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserDTO user_final = userService.getUserByEmail(auth.getName());
@@ -62,6 +67,7 @@ public class CatalogController {
 
     // Detalles del producto
     @GetMapping("/product/{productId}")
+    @CrossOrigin(origins = "http://localhost:3030")
     public ResponseEntity<ProductDTO> getProductDetail(@PathVariable Long productId) throws Exception{
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -73,6 +79,7 @@ public class CatalogController {
 
     // Agregar producto a favoritos
     @PostMapping("/product/{productId}/favorite")
+    @CrossOrigin(origins = "http://localhost:3030")
     public ResponseEntity<Void> addToFavorites(@PathVariable Long productId) throws Exception{
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserDTO user_final = userService.getUserByEmail(auth.getName());
@@ -81,6 +88,7 @@ public class CatalogController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
     @DeleteMapping("/product/{productId}/favorite")
+    @CrossOrigin(origins = "http://localhost:3030")
     public ResponseEntity<Void> removeFavorites(@PathVariable Long productId) throws Exception{
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserDTO user_final = userService.getUserByEmail(auth.getName());
@@ -90,6 +98,7 @@ public class CatalogController {
     }
 
     @GetMapping("/favorites")
+    @CrossOrigin(origins = "http://localhost:3030")
     public ResponseEntity<List<Product>> getFavoritesProducts() throws Exception{
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserDTO user_final = userService.getUserByEmail(auth.getName());
