@@ -44,49 +44,59 @@ public class BasketService {
         return basketRepository.save(newBasket);
     }
 
-    public BasketDTO addProductToBasket(String email, Long productId, int quiantity) throws Exception {
-        UserDTO user_dto = userService.getUserByEmail(email);
-        User user = user_dto.toUser();
+    public void addProductToBasket(String email, Product product, ProductBasket productBasket) throws Exception {
+        UserDTO userDTO = userService.getUserByEmail(email);
+        User user = userDTO.toUser();
         Basket basket = basketRepository.findBasketByUser(user).orElseGet(() -> createNewBasketForUser(user));
-        Product product = productRepository.findById(productId).orElseThrow(() -> new Exception("No se encontro el producto"));
-        Optional<ProductBasket> existingProductBasket = productBasketRepository.findByBasketAndProduct(basket, product);
+        long productId = product.getProductId();
+        Product productToAdd = productRepository.findById(productId).orElseThrow(() -> new Exception("No se encontro el producto"));
+        Optional<ProductBasket> existingProductBasket = productBasketRepository.findById(productBasket.getProductBasketId());
 
         if (existingProductBasket.isPresent()) {
-            ProductBasket productBasket = existingProductBasket.get();
-            productBasket.setQuantity(productBasket.getQuantity() + quiantity);
+            ProductBasket finalProductBasket = existingProductBasket.get();
+            productBasket.setQuantity(finalProductBasket.getQuantity() + 1);
             productBasketRepository.save(productBasket);
         } else {
             ProductBasket newProductBasket = new ProductBasket();
             newProductBasket.setBasket(basket);
-            newProductBasket.setProduct(product);
-            newProductBasket.setQuantity(quiantity);
+            newProductBasket.setProduct(productToAdd);
+            newProductBasket.setQuantity(1);
             productBasketRepository.save(newProductBasket);
         }
-
-        basket = basketRepository.save(basket);
-        return mapToBasketDTO(basket);
     }
 
-    public void removeProductFromBasket(String email, Long productId) throws Exception {
-        UserDTO user_dto = userService.getUserByEmail(email);
-        User user = user_dto.toUser();
+    public void removeProductFromBasket(String email, Long productBasketId) throws Exception {
+        UserDTO userDTO = userService.getUserByEmail(email);
+        User user = userDTO.toUser();
         Basket basket = basketRepository.findBasketByUser(user)
                 .orElseThrow(() -> new Exception("No existe el carrito"));
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new Exception("No se encontro el producto"));
-        ProductBasket productBasket = productBasketRepository.findByBasketAndProduct(basket, product)
-                .orElseThrow(() -> new Exception("El producto no se encuentra en el carrito"));
-        productBasketRepository.delete(productBasket);
+        for (ProductBasket productBasket : basket.getProducts()) {
+            if (productBasket.getProductBasketId().equals(productBasketId)) {
+                productBasketRepository.delete(productBasket);
+            }
+        }
     }
 
     public void clearBasket(String email) throws Exception {
-        UserDTO user_dto = userService.getUserByEmail(email);
-        User user = user_dto.toUser();
+        UserDTO userDTO = userService.getUserByEmail(email);
+        User user = userDTO.toUser();
         Basket basket = basketRepository.findBasketByUser(user)
                 .orElseThrow(() -> new Exception("No existe el carrito"));
         List<ProductBasket> productBasketList = productBasketRepository.findByBasket(basket);
         productBasketRepository.deleteAll(productBasketList);
 
+    }
+
+    public void increaseQuantity(String email, Long productBasketId) throws Exception {
+        UserDTO userDTO = userService.getUserByEmail(email);
+        User user = userDTO.toUser();
+        Basket basket = basketRepository.findBasketByUser(user)
+                .orElseThrow(() -> new Exception("No existe el carrito"));
+        for (ProductBasket productBasket : basket.getProducts()) {
+            if (productBasket.getProductBasketId().equals(productBasketId)) {
+                productBasket.setQuantity(productBasket.getQuantity() + 1);
+            }
+        }
     }
 
     private BasketSummaryDTO mapToBasketSummaryDTO(Basket basket) {
@@ -110,16 +120,16 @@ public class BasketService {
     }
 
     public BasketSummaryDTO getBasketSummaryByUserEmail(String email) throws Exception {
-        UserDTO user_dto = userService.getUserByEmail(email);
-        User user = user_dto.toUser();
+        UserDTO userDTO = userService.getUserByEmail(email);
+        User user = userDTO.toUser();
         Basket basket = basketRepository.findBasketByUser(user)
                 .orElseThrow(() -> new Exception("Carrito no encontrado"));
         return mapToBasketSummaryDTO(basket);
     }
 
     public Double calculateTotal(String email) throws Exception {
-        UserDTO user_dto = userService.getUserByEmail(email);
-        User user = user_dto.toUser();
+        UserDTO userDTO = userService.getUserByEmail(email);
+        User user = userDTO.toUser();
         Basket basket = basketRepository.findBasketByUser(user)
                 .orElseThrow(() -> new Exception("No existe el carrito"));
         double finalPrice = 0;
@@ -130,8 +140,8 @@ public class BasketService {
     }
 
     public CheckOut checkout(String email) throws Exception {
-        UserDTO user_dto = userService.getUserByEmail(email);
-        User user = user_dto.toUser();
+        UserDTO userDTO = userService.getUserByEmail(email);
+        User user = userDTO.toUser();
         Basket basket = basketRepository.findBasketByUser(user)
                 .orElseThrow(() -> new Exception("No existe el carrito"));
 
@@ -150,11 +160,20 @@ public class BasketService {
         }
 
         double totalPrice = calculateTotal(email);
+
+        List<ProductBasket> copiedProducts = basket.getProducts().stream()
+                .map(pb -> {
+                    ProductBasket newProductBasket = new ProductBasket();
+                    newProductBasket.setProduct(pb.getProduct());
+                    newProductBasket.setQuantity(pb.getQuantity());
+                    return productBasketRepository.save(newProductBasket);
+                }).collect(Collectors.toList());
+
         CheckOut checkOut = new CheckOut();
         checkOut.setTotal(totalPrice);
         checkOut.setTransactionDate(new Date());
         checkOut.setUser(user);
-        checkOut.setProducts(basket.getProducts());
+        checkOut.setProducts(copiedProducts);
 
         checkOutRepository.save(checkOut);
         clearBasket(email);

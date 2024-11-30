@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.minidev.json.annotate.JsonIgnore;
 
 import java.util.Date;
 import java.util.List;
@@ -18,6 +19,7 @@ public class CheckOutDTO {
     private Date transactionDate;
     private double total;
 
+    @JsonIgnore
     private User user;
 
     private List<ProductBasket> products;
