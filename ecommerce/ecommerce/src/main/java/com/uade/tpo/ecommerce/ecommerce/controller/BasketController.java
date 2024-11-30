@@ -4,6 +4,8 @@ import com.uade.tpo.ecommerce.ecommerce.dto.BasketSummaryDTO;
 import com.uade.tpo.ecommerce.ecommerce.dto.CheckOutDTO;
 import com.uade.tpo.ecommerce.ecommerce.repository.entity.Basket;
 import com.uade.tpo.ecommerce.ecommerce.repository.entity.CheckOut;
+import com.uade.tpo.ecommerce.ecommerce.repository.entity.Product;
+import com.uade.tpo.ecommerce.ecommerce.repository.entity.ProductBasket;
 import com.uade.tpo.ecommerce.ecommerce.service.BasketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,10 +22,10 @@ public class BasketController {
     private BasketService basketService;
 
     @PostMapping("/add")
-    public ResponseEntity<Void> addProductToBasket(@RequestBody BasketRequest basketRequest) throws Exception{
+    public ResponseEntity<Void> addProductToBasket(@RequestBody Product product, ProductBasket productBasket) throws Exception{
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
-        basketService.addProductToBasket(email, basketRequest.getProductId(), basketRequest.getQuantity());
+        basketService.addProductToBasket(email, product, productBasket);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -44,6 +46,14 @@ public class BasketController {
         return ResponseEntity.ok(basketSummaryDTO);
     }
 
+    @PutMapping("/increase")
+    public ResponseEntity<Void> increaseBasket(@RequestBody Long productBasketId) throws Exception {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        basketService.increaseQuantity(email, productBasketId);
+        return ResponseEntity.noContent().build();
+    }
+
     @PostMapping("/checkout")
     public ResponseEntity<CheckOutDTO> checkout() throws Exception {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -51,4 +61,6 @@ public class BasketController {
         CheckOut checkout = basketService.checkout(email);
         return ResponseEntity.ok(checkout.toDTO());
     }
+
+
 }
