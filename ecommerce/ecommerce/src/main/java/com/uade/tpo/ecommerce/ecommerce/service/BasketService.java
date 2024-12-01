@@ -99,6 +99,23 @@ public class BasketService {
         }
     }
 
+    public void decreaseQuantity(String email, Long productBasketId) throws Exception {
+        UserDTO userDTO = userService.getUserByEmail(email);
+        User user = userDTO.toUser();
+        Basket basket = basketRepository.findBasketByUser(user)
+                .orElseThrow(() -> new Exception("No existe el carrito"));
+        for (ProductBasket productBasket : basket.getProducts()) {
+            if (productBasket.getProductBasketId().equals(productBasketId)) {
+                if (productBasket.getQuantity() - 1 == 0) {
+                    removeProductFromBasket(email, productBasket.getProductBasketId());
+                }
+                else {
+                    productBasket.setQuantity(productBasket.getQuantity() - 1);
+                }
+            }
+        }
+    }
+
     private BasketSummaryDTO mapToBasketSummaryDTO(Basket basket) {
         BasketSummaryDTO basketSummaryDTO = new BasketSummaryDTO();
         basketSummaryDTO.setCreationDate(basket.getCreationDate());

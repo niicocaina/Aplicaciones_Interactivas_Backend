@@ -15,11 +15,20 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/v1/basket")
+@RequestMapping("basket")
 public class BasketController {
 
     @Autowired
     private BasketService basketService;
+
+    // Obtener el carrito actual del usuario
+    @GetMapping
+    public ResponseEntity<BasketSummaryDTO> getBasket() throws Exception {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        BasketSummaryDTO basketSummaryDTO = basketService.getBasketSummaryByUserEmail(email);
+        return ResponseEntity.ok(basketSummaryDTO);
+    }
 
     @PostMapping("/add")
     public ResponseEntity<Void> addProductToBasket(@RequestBody Product product, ProductBasket productBasket) throws Exception{
@@ -37,20 +46,19 @@ public class BasketController {
         return ResponseEntity.noContent().build();
     }
 
-    // Obtener el carrito actual del usuario
-    @GetMapping
-    public ResponseEntity<BasketSummaryDTO> getBasket() throws Exception {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String email = auth.getName();
-        BasketSummaryDTO basketSummaryDTO = basketService.getBasketSummaryByUserEmail(email);
-        return ResponseEntity.ok(basketSummaryDTO);
-    }
-
     @PutMapping("/increase")
     public ResponseEntity<Void> increaseBasket(@RequestBody Long productBasketId) throws Exception {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
         basketService.increaseQuantity(email, productBasketId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/decrease")
+    public ResponseEntity<Void> decreaseBasket(@RequestBody Long productBasketId) throws Exception {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        basketService.decreaseQuantity(email, productBasketId);
         return ResponseEntity.noContent().build();
     }
 
