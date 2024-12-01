@@ -151,12 +151,10 @@ public class BasketService {
             if (product.getStock() < productBasket.getQuantity()) {
                 throw new Exception("No hay suficiente stock para el producto: " + product.getName());
             }
-        }
-
-        for (ProductBasket productBasket : basket.getProducts()) {
-            Product product = productBasket.getProduct();
-            product.setStock(product.getStock() - productBasket.getQuantity());
-            productRepository.save(product);
+            else{
+                product.setStock(product.getStock() - productBasket.getQuantity());
+                productRepository.save(product);
+            }
         }
 
         double totalPrice = calculateTotal(email);
