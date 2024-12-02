@@ -26,6 +26,7 @@ public class UserDTO {
     User user = new User();
     user.setId(this.id);
     user.setLastName(this.lastName);
+     user.setFirstName(this.firstName);
     user.setUserName(this.userName);
     user.setEmail(this.email);
     user.setPassword(this.password);

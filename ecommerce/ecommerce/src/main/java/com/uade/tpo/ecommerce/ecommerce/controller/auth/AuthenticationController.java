@@ -6,16 +6,13 @@ import com.uade.tpo.ecommerce.ecommerce.service.AuthenticationService;
 import com.uade.tpo.ecommerce.ecommerce.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
+
 import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/v1/auth")
+@CrossOrigin(origins = "http://localhost:3030")
 @RequiredArgsConstructor
 public class AuthenticationController {
 
@@ -23,18 +20,21 @@ public class AuthenticationController {
     private final UserService userService;
 
     @PostMapping("/register")
+    @CrossOrigin(origins = "http://localhost:3030")
     public ResponseEntity<AuthenticationResponse> register(
             @RequestBody RegisterRequest request) {
         return ResponseEntity.ok(service.register(request));
     }
 
     @PostMapping("/authenticate")
+    @CrossOrigin(origins = "http://localhost:3030")
     public ResponseEntity<AuthenticationResponse> authenticate(
             @RequestBody AuthenticationRequest request) throws Exception {
         return ResponseEntity.ok(service.authenticate(request));
     }
 
     @GetMapping("/user")
+    @CrossOrigin(origins = "http://localhost:3030")
     public ResponseEntity<UserDTO> getLoggedUser (Principal principal) {
         String email = principal.getName();
         try {
@@ -46,6 +46,7 @@ public class AuthenticationController {
     }
 
     @PutMapping("/update-password")
+    @CrossOrigin(origins = "http://localhost:3030")
     public ResponseEntity<String> updatePassword(@RequestBody UpdatePasswordDTO updatePasswordDTO, Principal principal) {
         try {
             String email = principal.getName();

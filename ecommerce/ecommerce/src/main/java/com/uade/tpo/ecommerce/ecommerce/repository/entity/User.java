@@ -40,6 +40,7 @@ public class User implements UserDetails {
         UserDTO user = new UserDTO();
         user.setId(this.id);
         user.setLastName(this.lastName);
+        user.setFirstName(this.firstName);
         user.setUserName(this.userName);
         user.setEmail(this.email);
         user.setPassword(this.password);
