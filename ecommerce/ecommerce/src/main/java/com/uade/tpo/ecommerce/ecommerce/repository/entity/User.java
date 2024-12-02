@@ -45,6 +45,7 @@ public class User implements UserDetails {
         user.setEmail(this.email);
         user.setPassword(this.password);
         user.setRole(this.role);
+        user.setBirthDate(this.birthDate);
         return user;
     }
 
