@@ -19,6 +19,7 @@ public class CheckOutDTO {
     private Date transactionDate;
     private double total;
 
+
     @JsonIgnore
     private User user;
 
