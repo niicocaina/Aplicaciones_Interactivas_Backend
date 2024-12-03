@@ -187,6 +187,11 @@ public class BasketService {
         Basket basket = basketRepository.findBasketByUser(user)
                 .orElseThrow(() -> new Exception("No existe el carrito"));
 
+        if (basket.getProducts().isEmpty()) {
+            System.out.println("No se realizo la compra");
+            throw new Exception("El carrito esta vacio");
+        }
+
         for (ProductBasket productBasket : basket.getProducts()) {
             Product product = productBasket.getProduct();
 
