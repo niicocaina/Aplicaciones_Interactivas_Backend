@@ -8,6 +8,7 @@ import lombok.Data;
 public class ProductInBasketDTO {
     private Long id;
     private Long productId;
+    private int productStock;
     private String name;
     private String description;
     private int price;

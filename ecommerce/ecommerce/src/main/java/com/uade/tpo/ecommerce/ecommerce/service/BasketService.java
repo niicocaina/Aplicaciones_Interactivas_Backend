@@ -148,6 +148,7 @@ public class BasketService {
                 .map(productBasket -> new ProductInBasketDTO(
                         productBasket.getProductBasketId(),
                         productBasket.getProduct().getProductId(),
+                        productBasket.getProduct().getStock(),
                         productBasket.getProduct().getName(),
                         productBasket.getProduct().getDescription(),
                         productBasket.getProduct().getPrice(),
