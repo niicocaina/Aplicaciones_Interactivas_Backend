@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -17,9 +18,23 @@ import java.util.List;
 public class BasketDTO {
     private Long basketId;
     private Date creationDate;
-    private User user;
-    private List<ProductBasket> products;
+    private UserDTO user;
+    private List<ProductBasketDTO> products;
 
     public BasketDTO() {}
 
+    public Basket toBasket() {
+        Basket basket = new Basket();
+        basket.setId(this.basketId);
+        basket.setCreationDate(this.creationDate);
+        basket.setUser(this.user.toUser());
+
+        List<ProductBasket> productBasketList = new ArrayList<>();
+        for (ProductBasketDTO productBasketDTO : this.products) {
+            ProductBasket productBasket = productBasketDTO.toProductBasket();
+            productBasketList.add(productBasket);
+        }
+        basket.setProducts(productBasketList);
+        return basket;
+    }
 }

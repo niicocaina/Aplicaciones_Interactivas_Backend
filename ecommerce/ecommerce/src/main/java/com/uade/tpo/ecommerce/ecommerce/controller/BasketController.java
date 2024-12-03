@@ -1,7 +1,6 @@
 package com.uade.tpo.ecommerce.ecommerce.controller;
 
-import com.uade.tpo.ecommerce.ecommerce.dto.BasketSummaryDTO;
-import com.uade.tpo.ecommerce.ecommerce.dto.CheckOutDTO;
+import com.uade.tpo.ecommerce.ecommerce.dto.*;
 import com.uade.tpo.ecommerce.ecommerce.repository.entity.Basket;
 import com.uade.tpo.ecommerce.ecommerce.repository.entity.CheckOut;
 import com.uade.tpo.ecommerce.ecommerce.repository.entity.Product;
@@ -9,6 +8,7 @@ import com.uade.tpo.ecommerce.ecommerce.repository.entity.ProductBasket;
 import com.uade.tpo.ecommerce.ecommerce.service.BasketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("basket")
+@CrossOrigin(origins = "http://localhost:3030")
 public class BasketController {
 
     @Autowired
@@ -31,43 +32,53 @@ public class BasketController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Void> addProductToBasket(@RequestBody Product product, ProductBasket productBasket) throws Exception{
+    public ResponseEntity<Void> addProductToBasket(@RequestBody ProductDTO productDTO) throws Exception{
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
-        basketService.addProductToBasket(email, product, productBasket);
+        basketService.addProductToBasket(email, productDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/remove")
-    public ResponseEntity<Void> removeProductFromBasket(@RequestParam Long productId) throws Exception {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String email = auth.getName();
-        basketService.removeProductFromBasket(email, productId);
-        return ResponseEntity.noContent().build();
-    }
-
     @PutMapping("/increase")
-    public ResponseEntity<Void> increaseBasket(@RequestBody Long productBasketId) throws Exception {
+    public ResponseEntity<Void> increaseBasket(@RequestBody ProductInBasketDTO productBasketDTO) throws Exception {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
+        Long productBasketId = productBasketDTO.getId();
         basketService.increaseQuantity(email, productBasketId);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/decrease")
-    public ResponseEntity<Void> decreaseBasket(@RequestBody Long productBasketId) throws Exception {
+    public ResponseEntity<Void> decreaseBasket(@RequestBody ProductInBasketDTO productBasketDTO) throws Exception {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
+        Long productBasketId = productBasketDTO.getId();
         basketService.decreaseQuantity(email, productBasketId);
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/checkout")
-    public ResponseEntity<CheckOutDTO> checkout() throws Exception {
+    @DeleteMapping("/remove")
+    public ResponseEntity<Void> removeProductFromBasket(@RequestParam Long id) throws Exception {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
-        CheckOut checkout = basketService.checkout(email);
-        return ResponseEntity.ok(checkout.toDTO());
+        basketService.removeProductFromBasket(email, id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/removeAll")
+    public ResponseEntity<Void> removeAllProductsFromBasket() throws Exception {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        basketService.clearBasket(email);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/checkout")
+    public ResponseEntity<Void> checkout() throws Exception {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        basketService.checkout(email);
+        return ResponseEntity.noContent().build();
     }
 
 

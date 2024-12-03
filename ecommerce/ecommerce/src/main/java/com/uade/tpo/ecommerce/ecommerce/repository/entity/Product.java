@@ -10,7 +10,6 @@ import lombok.*;
 @Data
 @AllArgsConstructor
 public class Product {
-    public Product() {}
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
@@ -48,5 +47,7 @@ public class Product {
                 .img5(this.getImg5())
                 .build();
     }
+
+    public Product() {}
 
 }
