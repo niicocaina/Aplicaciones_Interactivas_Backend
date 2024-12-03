@@ -9,6 +9,7 @@ import com.uade.tpo.ecommerce.ecommerce.repository.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -41,6 +42,9 @@ public class BasketService {
         long productId = productDTO.getId();
         Product productToAdd = productRepository.findById(productId).orElseThrow(() -> new Exception("No se encontro el producto"));
         try {
+            if (basket.getProducts() == null) {
+                basket.setProducts(new ArrayList<>());  // Inicializa la lista de productos vacía
+            }
             if (basket.getProducts().isEmpty()) {
                 ProductBasket newProductBasket = new ProductBasket();
                 newProductBasket.setBasket(basket);
